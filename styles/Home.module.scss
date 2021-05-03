@@ -1,0 +1,104 @@
+.container {
+    padding: 3rem;
+}
+
+.main {
+}
+
+.title {
+    font-size: 10rem;
+    font-weight: normal;
+    margin-top: -5rem;
+}
+
+.fieldset {
+    font-size: 2rem;
+    background-color: #F4F4F4;
+    border-radius: 6px;
+
+    > legend {
+        font-weight: bold;
+        padding: 0 0.8rem;
+        background-color: white;
+    }
+}
+
+.inputs {
+    display: flex;
+}
+
+.input {
+    flex: 1;
+    font-size: 2rem;
+    margin-right: 1rem;
+    padding: 0.5rem;
+    border: 1px solid #888;
+    border-radius: 4px;
+}
+
+.submit {
+    padding: 0 1.5rem;
+    font-size: 1.5rem;
+    font-weight: bold;
+    border: 1px solid #888;
+    border-radius: 4px;
+    background: white;
+    cursor: pointer;
+}
+
+.checkboxes {
+    display: flex;
+    align-items: baseline;
+    margin-top: 1rem;
+    font-size: 1.7rem;
+
+    > label {
+        padding-left: 0.6rem;
+    }
+
+    .removeAccents {
+        display: inline-block;
+        margin-right: 2rem;
+    }
+}
+
+.results {
+    margin: 3rem 2rem 2rem;
+}
+
+.resultsError {
+    margin: 1rem 2rem 2rem;
+    color: red;
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.resultsHeadline {
+    font-size: 2rem;
+}
+
+.resultsList {
+    margin: 1rem 0;
+    padding: 0;
+    font-size: 2rem;
+    font-family: monospace;
+    font-weight: bold;
+    list-style: none;
+}
+
+.resultSuccess,
+.resultError {
+    margin: 0;
+    padding-bottom: 0.5rem;
+    white-space: nowrap;
+    &:not(:last-of-type) {
+        border-bottom: 1px solid #888;
+    }
+}
+
+.resultSuccess {
+    a {
+        color: blue;
+        text-decoration: underline;
+    }
+}

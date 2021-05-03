@@ -1,0 +1,46 @@
+{
+    "env": {
+        "browser": true,
+        "es6": true,
+        "node": true
+    },
+    "parser": "babel-eslint",
+    "plugins": ["babel", "react", "react-hooks"],
+    "extends": ["eslint:recommended", "plugin:react/recommended"],
+    "globals": {
+        "Cypress": true
+    },
+    "rules": {
+        "array-callback-return": ["error", { "allowImplicit": true }],
+        "camelcase": "warn",
+        "dot-notation": "warn",
+        "no-duplicate-imports": "warn",
+        "no-else-return": "warn",
+        "no-empty": 0,
+        "no-extra-boolean-cast": "warn",
+        "no-floating-decimal": "warn",
+        "no-undef": "warn",
+        "no-unneeded-ternary": "warn",
+        "no-unused-vars": "warn",
+        "no-useless-return": "warn",
+        "no-use-before-define": [
+            "warn",
+            { "functions": true, "classes": true }
+        ],
+        "no-useless-rename": "warn",
+        "prefer-arrow-callback": "warn",
+        "prefer-const": "warn",
+        "prefer-object-spread": "warn",
+        "prefer-rest-params": "warn",
+        "require-atomic-updates": "error",
+        "react/display-name": 0,
+        "react-hooks/rules-of-hooks": "error",
+        "react-hooks/exhaustive-deps": "warn"
+    },
+    "settings": {
+        "react": {
+            "pragma": "React",
+            "version": "detect"
+        }
+    }
+}
