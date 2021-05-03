@@ -1,34 +1,19 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# B17 stuff
 
-## Getting Started
+## Outguess interface device
 
-First, run the development server:
+Main API is in [pages/api/outguess.js](https://github.com/claus/b17/blob/main/pages/api/outguess.js).
 
-```bash
-npm run dev
-# or
-yarn dev
-```
+- Install Node.js
+- `npm i`
+- `npm run dev`
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## Some useful scripts
 
-You can start editing the page by modifying `pages/index.js`. The page auto-updates as you edit the file.
+- [base64fixer.js](https://github.com/claus/b17/blob/main/scripts/base64fixer.js) - There was a cipher in B17 where Morse code translated to base64(-ish). Problem was that Morse does not have upper and lowercode characters. obviously. This script tries to figure out the character case.
 
-[API routes](https://nextjs.org/docs/api-routes/introduction) can be accessed on [http://localhost:3000/api/hello](http://localhost:3000/api/hello). This endpoint can be edited in `pages/api/hello.js`.
+- [pager-word-extract.js](https://github.com/claus/b17/blob/main/scripts/pager-word-extract.js) - This creates a word list out of the B17 #the-pager corpus. Might be useful for brute force attacks.
 
-The `pages/api` directory is mapped to `/api/*`. Files in this directory are treated as [API routes](https://nextjs.org/docs/api-routes/introduction) instead of React pages.
+- [thefirst-decode.js](https://github.com/claus/b17/blob/main/scripts/thefirst-decode.js) - Pulls binary data out of `thefirst.png`, extracted from the Coastal Device. This was a bit tricky because the image is weirdly resized.
 
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+- [zinc-decode.js](https://github.com/claus/b17/blob/main/scripts/zinc-decode.js) - Pulls binary data out of `zinc.jpg`, extracted from Syphon-Signal-Registered-XIIXVIIXVIIXVVI.jpg. Standard RGB to ASCII stuff.
