@@ -1,18 +1,52 @@
 {
-    "env": {
-        "browser": true,
-        "es6": true,
-        "node": true
-    },
-    "parser": "babel-eslint",
-    "plugins": ["babel", "react", "react-hooks"],
-    "extends": ["eslint:recommended", "plugin:react/recommended"],
+    "extends": "next",
     "globals": {
-        "Cypress": true
+        "console": true,
+        "window": true,
+        "document": true,
+        "process": true,
+        "sessionStorage": true,
+        "setTimeout": true,
+        "clearTimeout": true,
+        "requestAnimationFrame": true,
+        "cancelAnimationFrame": true,
+        "Map": true,
+        "Set": true,
+        "URL": true,
+        "URLSearchParams": true,
+        "Image": true,
+        "IntersectionObserver": true,
+        "TextDecoder": true,
+        "Buffer": true,
+        "Promise": true,
+        "require": true,
+        "fetch": true
     },
     "rules": {
-        "array-callback-return": ["error", { "allowImplicit": true }],
+        "react/react-in-jsx-scope": "off",
+        "jsx-a11y/anchor-is-valid": [
+            "error",
+            {
+                "components": [
+                    "Link"
+                ],
+                "specialLink": [
+                    "hrefLeft",
+                    "hrefRight"
+                ],
+                "aspects": [
+                    "invalidHref",
+                    "preferButton"
+                ]
+            }
+        ],
         "camelcase": "warn",
+        "array-callback-return": [
+            "error",
+            {
+                "allowImplicit": true
+            }
+        ],
         "dot-notation": "warn",
         "no-duplicate-imports": "warn",
         "no-else-return": "warn",
@@ -25,7 +59,10 @@
         "no-useless-return": "warn",
         "no-use-before-define": [
             "warn",
-            { "functions": true, "classes": true }
+            {
+                "functions": true,
+                "classes": true
+            }
         ],
         "no-useless-rename": "warn",
         "prefer-arrow-callback": "warn",
@@ -35,12 +72,7 @@
         "require-atomic-updates": "error",
         "react/display-name": 0,
         "react-hooks/rules-of-hooks": "error",
-        "react-hooks/exhaustive-deps": "warn"
-    },
-    "settings": {
-        "react": {
-            "pragma": "React",
-            "version": "detect"
-        }
+        "react-hooks/exhaustive-deps": "warn",
+        "@next/next/no-img-element": 0
     }
 }

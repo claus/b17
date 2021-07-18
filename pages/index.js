@@ -1,12 +1,10 @@
 import { useRef, useState } from 'react';
-import { useRouter } from 'next/router';
 
 import Head from 'next/head';
 
 import styles from '../styles/Home.module.scss';
 
 export default function Home() {
-    const router = useRouter();
     const input = useRef();
     const removeAccents = useRef();
     const removeNonAlphaNum = useRef();
@@ -20,7 +18,7 @@ export default function Home() {
         setResponse(null);
         event.preventDefault();
         const url = new URL(
-            `${location.protocol}//${location.host}/api/outguess`
+            `${window.location.protocol}//${window.location.host}/api/outguess`
         );
         const search = new URLSearchParams({
             key: input.current.value,
@@ -76,7 +74,7 @@ export default function Home() {
                                 ref={removeAccents}
                             />
                             <label
-                                for="removeAccents"
+                                htmlFor="removeAccents"
                                 className={styles.removeAccents}
                             >
                                 Remove accents/umlauts
@@ -88,7 +86,7 @@ export default function Home() {
                                 ref={removeNonAlphaNum}
                                 className={styles.removeNonAlphaNum}
                             />
-                            <label for="removeNonAlphaNum">
+                            <label htmlFor="removeNonAlphaNum">
                                 Remove non-alphanumeric characters
                             </label>
                         </div>

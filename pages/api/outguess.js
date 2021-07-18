@@ -2,11 +2,12 @@ const { spawn } = require('child_process');
 const fileGuesser = require('guess-file-type');
 const tmp = require('tmp');
 const fs = require('fs');
-const utf8 = require('utf8');
 const accents = require('remove-accents');
 
 const OUTGUESS_APP = '/Applications/Outguess.app/Contents/outguess';
-const WORK_DIR = '/Users/claus/Projects/building17/public/data/';
+const WORK_DIR = '/Users/claus/Projects/building17/public/data/obs/';
+// const JPEG = 'C._Halloway_S2_magnification_Custom.jpg'; // 112313091989
+const JPEG = 'Syphon-Signal-Registered-VVIXXIVVIXXI';
 const VERBOSE = true;
 
 const jpegHeader = Buffer.from([0xff, 0xd8]);
@@ -24,38 +25,6 @@ const knownMimes = [
     'unknown',
 ];
 
-export default async (req, res) => {
-    if (req.query?.key?.length > 0) {
-        const removeAccents = req.query?.removeAccents == 1;
-        const removeNonAlphaNum = req.query?.removeNonAlphaNum == 1;
-        const allKeys = permutations(req.query.key)
-            .flat()
-            .filter((key, i, arr) => key !== '' && arr.indexOf(key) == i)
-            .map(key => (removeAccents ? accents.remove(key) : key))
-            .map(key => removeNonAlphaNum ? key.replace(/[^a-zA-Z0-9]/g, '') : key);
-        if (allKeys.length > 64) {
-            res.status(400).json({ error: '4 components allowed max.' });
-            return;
-        }
-        const filename =
-            req.query?.filename ??
-            'Syphon-Signal-Registered-XIIXVIIXVIIXVVI.jpg';
-        const results = await outguessAll(allKeys, filename);
-        res.status(200).json(results);
-    } else {
-        res.status(400).json({ error: 'Key is empty or missing.' });
-    }
-};
-
-async function outguessAll(keys, filename) {
-    const results = [];
-    for (let i = 0; i < keys.length; i++) {
-        const result = await outguess(keys[i], filename);
-        results.push(result);
-    }
-    return results;
-}
-
 function outguess(key, filename) {
     const promise = new Promise((resolve, reject) => {
         const out = tmp.fileSync();
@@ -64,8 +33,9 @@ function outguess(key, filename) {
         const moveAndResolve = (mime, ext) => {
             const filename = `${key}.${ext}`;
             const path = `${WORK_DIR}files/${filename}`;
+            const stat = fs.statSync(out.name);
             fs.renameSync(out.name, path);
-            resolve({ key, mime, file: filename });
+            resolve({ key, mime, file: filename, size: stat.size });
         };
         child.on('close', async code => {
             const buffer = fs.readFileSync(out.name);
@@ -73,7 +43,7 @@ function outguess(key, filename) {
                 // 1. Check for text content
                 try {
                     const decoder = new TextDecoder('utf-8', { fatal: true });
-                    const string = decoder.decode(buffer);
+                    decoder.decode(buffer);
                     moveAndResolve('text/plain', 'txt');
                     return;
                 } catch (e) {}
@@ -130,29 +100,13 @@ function outguess(key, filename) {
         });
 }
 
-function permutations(input) {
-    const rawKeys = input
-        .split(',')
-        .map(rawKey => rawKey.replace(/\s+/g, '').toLowerCase());
-    const keys = permutator(rawKeys).map(key => key.join(''));
-    return keys;
-}
-
-function permutator(inputArr) {
-    const result = [];
-    const permute = (arr, m = []) => {
-        if (arr.length === 0) {
-            result.push(m);
-        } else {
-            for (let i = 0; i < arr.length; i++) {
-                let curr = arr.slice();
-                let next = curr.splice(i, 1);
-                permute(curr.slice(), m.concat(next));
-            }
-        }
-    };
-    combinations(inputArr).forEach(arr => permute(arr));
-    return result;
+async function outguessAll(keys, filename) {
+    const results = [];
+    for (let i = 0; i < keys.length; i++) {
+        const result = await outguess(keys[i], filename);
+        results.push(result);
+    }
+    return results;
 }
 
 function combinations(arr) {
@@ -170,3 +124,54 @@ function combinations(arr) {
     };
     return fn([], arr, []);
 }
+
+function permutator(inputArr) {
+    const result = [];
+    const permute = (arr, m = []) => {
+        if (arr.length === 0) {
+            result.push(m);
+        } else {
+            for (let i = 0; i < arr.length; i++) {
+                const curr = arr.slice();
+                const next = curr.splice(i, 1);
+                permute(curr.slice(), m.concat(next));
+            }
+        }
+    };
+    combinations(inputArr).forEach(arr => permute(arr));
+    return result;
+}
+
+function permutations(input) {
+    const rawKeys = input
+        .split(',')
+        .map(rawKey => rawKey.replace(/\s+/g, '').toLowerCase())
+        .slice(0, 4);
+    const keys = permutator(rawKeys).map(key => key.join(''));
+    return keys;
+}
+
+const outguessAPI = async (req, res) => {
+    if (req.query?.key?.length > 0) {
+        const removeAccents = req.query?.removeAccents == 1;
+        const removeNonAlphaNum = req.query?.removeNonAlphaNum == 1;
+        const allKeys = permutations(req.query.key)
+            .flat()
+            .filter((key, i, arr) => key !== '' && arr.indexOf(key) == i)
+            .map(key => (removeAccents ? accents.remove(key) : key))
+            .map(key =>
+                removeNonAlphaNum ? key.replace(/[^a-zA-Z0-9]/g, '') : key
+            );
+        if (allKeys.length > 64) {
+            res.status(400).json({ error: '4 components allowed max.' });
+            return;
+        }
+        const filename = req.query?.filename ?? JPEG;
+        const results = await outguessAll(allKeys, filename);
+        res.status(200).json(results);
+    } else {
+        res.status(400).json({ error: 'Key is empty or missing.' });
+    }
+};
+
+export default outguessAPI;
