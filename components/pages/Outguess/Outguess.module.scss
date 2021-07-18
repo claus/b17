@@ -1,0 +1,87 @@
+@import 'styles/fonts';
+
+.root {
+    @include haasRoman;
+    padding: 3rem 5rem;
+
+    &-isHidden {
+        visibility: hidden;
+    }
+}
+
+.header {
+    @include haasDisplayBold;
+    display: flex;
+    align-items: baseline;
+    margin-bottom: 4rem;
+}
+
+.door {
+    font-size: 12rem;
+    line-height: 5rem;
+    user-select: none;
+}
+
+.title {
+    flex: 1;
+    margin-left: 2.5rem;
+    font-size: 5rem;
+    line-height: 5rem;
+}
+
+.checkboxes {
+    display: flex;
+    align-items: baseline;
+    margin-top: 1rem;
+    font-size: 1.7rem;
+
+    > label {
+        padding-left: 0.6rem;
+    }
+
+    .removeAccents {
+        display: inline-block;
+        margin-right: 2rem;
+    }
+}
+
+.results {
+    margin: 3rem 2rem 2rem;
+}
+
+.resultsError {
+    margin: 1rem 2rem 2rem;
+    color: red;
+    font-size: 2rem;
+    font-weight: bold;
+}
+
+.resultsHeadline {
+    font-size: 2rem;
+}
+
+.resultsList {
+    margin: 1rem 0;
+    padding: 0;
+    font-size: 2rem;
+    font-family: monospace;
+    font-weight: bold;
+    list-style: none;
+}
+
+.resultSuccess,
+.resultError {
+    margin: 0;
+    padding-bottom: 0.5rem;
+    white-space: nowrap;
+    &:not(:last-of-type) {
+        border-bottom: 1px solid #888;
+    }
+}
+
+.resultSuccess {
+    a {
+        color: blue;
+        text-decoration: underline;
+    }
+}

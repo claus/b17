@@ -1,26 +1,12 @@
 {
-    "extends": "next",
-    "globals": {
-        "console": true,
-        "window": true,
-        "document": true,
-        "process": true,
-        "sessionStorage": true,
-        "setTimeout": true,
-        "clearTimeout": true,
-        "requestAnimationFrame": true,
-        "cancelAnimationFrame": true,
-        "Map": true,
-        "Set": true,
-        "URL": true,
-        "URLSearchParams": true,
-        "Image": true,
-        "IntersectionObserver": true,
-        "TextDecoder": true,
-        "Buffer": true,
-        "Promise": true,
-        "require": true,
-        "fetch": true
+    "extends": [
+        "next"
+    ],
+    "env": {
+        "browser": true,
+        "commonjs": true,
+        "es6": true,
+        "node": true
     },
     "rules": {
         "react/react-in-jsx-scope": "off",

@@ -1,0 +1,80 @@
+@import 'styles/fonts';
+
+.root {
+    position: relative;
+    display: flex;
+}
+
+.ephemeraDownloadForm {
+    display: flex;
+    flex: 1;
+}
+
+.input {
+    flex: 1;
+    font-size: 1.8rem;
+    margin-right: 1rem;
+    padding: 0.5rem 0.5rem 0.5rem 1rem;
+    border: 2px solid #666;
+    border-radius: 4px;
+
+    &::placeholder {
+        color: #aaa;
+    }
+
+    &:disabled {
+        border-color: rgba(black, 0.25);
+        background-color: transparent;
+    }
+}
+
+.submitButton,
+.uploadButton {
+    @include haasMedium;
+    padding: 0 1.5rem;
+    font-size: 1.5rem;
+    border: 2px solid #666;
+    border-radius: 4px;
+    background: white;
+    cursor: pointer;
+
+    &:disabled,
+    &-isDisabled {
+        cursor: auto;
+        color: rgba(black, 0.25);
+        border-color: currentColor;
+    }
+}
+
+.separator {
+    width: 2px;
+    margin: 0.3rem 2rem;
+    padding: 0;
+    border-style: none;
+    background-color: blue;
+    opacity: 0.2;
+}
+
+.uploadButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    user-select: none;
+
+    &:focus-within {
+        outline: 3px auto blue;
+        outline: 3px auto -webkit-focus-ring-color;
+    }
+}
+
+.uploadButtonHidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    clip: rect(0, 0, 0, 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+    overflow: hidden;
+}
