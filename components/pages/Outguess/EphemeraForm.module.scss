@@ -1,8 +1,10 @@
+@import 'styles/breakpoints';
 @import 'styles/fonts';
 
 .root {
     position: relative;
     display: flex;
+    flex-direction: column;
 }
 
 .ephemeraDownloadForm {
@@ -12,11 +14,12 @@
 
 .input {
     flex: 1;
-    font-size: 1.8rem;
+    font-size: 1.4rem;
     margin-right: 1rem;
     padding: 0.5rem 0.5rem 0.5rem 1rem;
     border: 2px solid #666;
     border-radius: 4px;
+    appearance: none;
 
     &::placeholder {
         color: #aaa;
@@ -31,12 +34,13 @@
 .submitButton,
 .uploadButton {
     @include haasMedium;
-    padding: 0 1.5rem;
+    padding: 0.5rem 1.5rem;
     font-size: 1.5rem;
     border: 2px solid #666;
     border-radius: 4px;
     background: white;
     cursor: pointer;
+    appearance: none;
 
     &:disabled,
     &-isDisabled {
@@ -44,15 +48,6 @@
         color: rgba(black, 0.25);
         border-color: currentColor;
     }
-}
-
-.separator {
-    width: 2px;
-    margin: 0.3rem 2rem;
-    padding: 0;
-    border-style: none;
-    background-color: blue;
-    opacity: 0.2;
 }
 
 .uploadButton {
@@ -77,4 +72,49 @@
     white-space: nowrap;
     border: 0;
     overflow: hidden;
+}
+
+.separator {
+    width: auto;
+    height: 2px;
+    padding: 0;
+    margin: 1rem 0.5rem;
+    border-style: none;
+    background-color: black;
+    opacity: 0.2;
+}
+
+@include medium {
+    .root {
+        flex-direction: row;
+    }
+
+    .input {
+        font-size: 1.6rem;
+        margin-right: 0.75rem;
+        padding: 0.5rem 0.5rem 0.5rem 1rem;
+    }
+
+    .submitButton,
+    .uploadButton {
+        padding: 0 1.5rem;
+        font-size: 1.5rem;
+    }
+
+    .separator {
+        width: 2px;
+        height: auto;
+        margin: 0.3rem 1.5rem;
+    }
+}
+
+@include large {
+    .input {
+        font-size: 1.8rem;
+        margin-right: 1rem;
+    }
+
+    .separator {
+        margin: 0.3rem 2rem;
+    }
 }

@@ -1,0 +1,109 @@
+@import 'styles/breakpoints';
+@import 'styles/fonts';
+
+.root {
+    margin-top: 2rem;
+}
+
+.headline {
+    @include haasBold;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.keyForm {
+    display: flex;
+    flex: 1;
+}
+
+.input {
+    flex: 1;
+    font-size: 1.4rem;
+    margin-right: 1rem;
+    padding: 0.5rem 0.5rem 0.5rem 1rem;
+    border: 2px solid #666;
+    border-radius: 4px;
+    appearance: none;
+
+    &::placeholder {
+        color: #aaa;
+    }
+
+    &:disabled {
+        border-color: rgba(black, 0.25);
+        background-color: transparent;
+    }
+}
+
+.submitButton {
+    @include haasMedium;
+    padding: 0.5rem 1.5rem;
+    font-size: 1.5rem;
+    border: 2px solid #666;
+    border-radius: 4px;
+    background: white;
+    cursor: pointer;
+    appearance: none;
+
+    &:disabled {
+        cursor: auto;
+        color: rgba(black, 0.25);
+        border-color: currentColor;
+    }
+}
+
+.progress {
+    font-size: 1.4rem;
+    margin-top: 1rem;
+
+    > span {
+        @include roboto;
+    }
+}
+
+.result {
+    position: relative;
+    color: #fff;
+    font-size: 1.4rem;
+    margin-top: 3rem;
+    padding: 1.5rem 2rem;
+    border: 2px solid #666;
+    border-radius: 4px;
+    background-color: #070;
+}
+
+.resultHeadline {
+    @include haasBold;
+    font-size: 2rem;
+    margin-bottom: 1rem;
+}
+
+.resultInfo {
+    font-size: 1.4rem;
+    line-height: 1.5;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.resultDownload {
+    @include haasMedium;
+    font-size: 1.7rem;
+    text-decoration: underline;
+    margin-top: 1rem;
+}
+
+.resultImage {
+    margin-top: 2rem;
+    border-radius: 4px;
+
+    > img {
+        width: 100%;
+    }
+}
+
+@include medium {
+    .root {
+        margin-top: 0;
+    }
+}

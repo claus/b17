@@ -1,0 +1,42 @@
+@import 'styles/breakpoints';
+@import 'styles/fonts';
+
+.root {
+    position: relative;
+}
+
+.headline {
+    @include haasBold;
+    font-size: 2rem;
+    margin-bottom: 0.5rem;
+}
+
+.info {
+    font-size: 1.4rem;
+    line-height: 1.4;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.image {
+    width: 100%;
+    padding: 1rem;
+    margin-top: 1.5rem;
+    background-color: #ddd;
+    border-radius: 0.75rem;
+}
+
+@include medium {
+    .headline {
+        margin-bottom: 1rem;
+    }
+
+    .info {
+        font-size: 1.6rem;
+    }
+
+    .image {
+        margin-top: 1.5rem;
+    }
+}

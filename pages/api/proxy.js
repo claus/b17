@@ -11,6 +11,18 @@ const proxy = async (req, res) => {
                     buffer[0] == 0xff &&
                     buffer[1] == 0xd8
                 ) {
+                    const url = new URL(req.body);
+                    const pathParts = url.pathname.split('/');
+                    const fileName = pathParts[pathParts.length - 1];
+                    res.setHeader(
+                        'Content-Disposition',
+                        `attachment; filename="${fileName}"`
+                    );
+                    res.setHeader(
+                        'x-whatever',
+                        `hello`
+                    );
+                    console.log(res.getHeaders())
                     res.status(200).send(buffer);
                 } else {
                     res.status(403).send(`Not a JPEG.`);
