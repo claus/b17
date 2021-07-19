@@ -65,7 +65,6 @@ const EphemeraForm = ({ disabled }) => {
     const handleDownloadSubmit = async event => {
         event.preventDefault();
         const url = event.target.elements.namedItem('ephemeraUrl').value;
-        console.log(cleanUrl(url));
         const response = await fetch('/api/proxy', {
             method: 'POST',
             body: cleanUrl(url),

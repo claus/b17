@@ -1,10 +1,8 @@
-import { useState } from 'react';
 import cx from 'classnames';
 
 import Head from 'next/head';
 
 import { useStateContext } from 'store';
-import { useOutguessAPI } from 'components/OutguessAPIProvider';
 
 import EphemeraForm from './EphemeraForm';
 import EphemeraInfo from './EphemeraInfo';
@@ -13,7 +11,6 @@ import KeyForm from './KeyForm';
 import styles from './Outguess.module.scss';
 
 const OutguessPage = ({ fontsLoaded }) => {
-    const api = useOutguessAPI();
     const { jpeg } = useStateContext();
 
     const rootStyle = cx(styles.root, {

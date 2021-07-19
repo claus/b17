@@ -38,8 +38,6 @@ const KeyForm = ({ className }) => {
                         const bytes = new Uint8Array(resultView);
                         const fileInfo = detectFileType(bytes);
                         if (fileInfo) {
-                            console.log(keys, index.current);
-                            console.log('CREATE URL');
                             const blob = new Blob([fileInfo.bytes], {
                                 type: fileInfo.mime,
                             });
@@ -48,13 +46,6 @@ const KeyForm = ({ className }) => {
                             dispatch({ type: SET_BUSY, busy: false });
                             break;
                         }
-                        // console.log(`Result size: ${result.byteLength}`);
-                        // document.getElementById('image').src =
-                        //     URL.createObjectURL(
-                        //         new Blob([result.buffer], {
-                        //             type: 'image/jpeg',
-                        //         })
-                        //     );
                         api.freeDecodeResultData();
                     }
                     if (performance.now() - start > 12) {
