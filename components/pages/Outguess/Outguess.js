@@ -30,7 +30,10 @@ const OutguessPage = ({ fontsLoaded }) => {
                 <EphemeraForm />
                 {jpeg && (
                     <div className={styles.step2}>
-                        <KeyForm className={styles.keyForm} />
+                        <KeyForm
+                            className={styles.keyForm}
+                            key={`${jpeg.fileName}-${jpeg.fileLength}`}
+                        />
                         <EphemeraInfo className={styles.ephemeraInfo} />
                     </div>
                 )}
