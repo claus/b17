@@ -47,20 +47,20 @@ const OutguessAPIProvider = ({ children }) => {
                 const STDERR = 'stderr';
                 const buffers = { [STDOUT]: '', [STDERR]: '' };
                 const handler = type => code => {
-                    const buffer = buffers[type];
-                    if (code === 10 && buffer !== '') {
-                        console.log(`${type}: ${buffer}`);
-                        if (type === STDOUT) {
-                            stdOutContent.current.push(buffer);
-                            setStdOut(JSON.stringify(stdOutContent.current));
-                        } else {
-                            stdErrContent.current.push(buffer);
-                            setStdErr(JSON.stringify(stdErrContent.current));
-                        }
-                        buffer = '';
-                    } else {
-                        buffer += String.fromCharCode(code);
-                    }
+                    // const buffer = buffers[type];
+                    // if (code === 10 && buffer !== '') {
+                    //     console.log(`${type}: ${buffer}`);
+                    //     if (type === STDOUT) {
+                    //         stdOutContent.current.push(buffer);
+                    //         setStdOut(JSON.stringify(stdOutContent.current));
+                    //     } else {
+                    //         stdErrContent.current.push(buffer);
+                    //         setStdErr(JSON.stringify(stdErrContent.current));
+                    //     }
+                    //     buffer = '';
+                    // } else {
+                    //     buffer += String.fromCharCode(code);
+                    // }
                 };
                 ctx.stdout = handler(STDOUT);
                 ctx.stderr = handler(STDERR);
