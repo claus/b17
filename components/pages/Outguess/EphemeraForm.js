@@ -2,6 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
 
+import { cleanUrl } from 'utils';
 import { useDispatchContext, useStateContext, SET_JPEG } from 'store';
 import { useOutguessAPI } from 'components/OutguessAPIProvider';
 
@@ -57,37 +58,6 @@ const EphemeraForm = ({ disabled }) => {
             } else {
                 setJpeg(bytes, fileName);
             }
-            // const p = api.createBuffer(array.byteLength);
-            // Module.HEAP8.set(array, p);
-            // if (api.readBitmap(p, array.byteLength) === 0) {
-            //     console.log('JPEG is ok.');
-            //     for (let i = 0; i < 10000; i++) {
-            //         const res = api.decode('112313091989');
-            //         if (res === 0) {
-            //             const resultPointer = api.getDecodeResultData();
-            //             const resultSize = api.getDecodeResultLen();
-            //             const resultView = new Uint8Array(
-            //                 Module.HEAP8.buffer,
-            //                 resultPointer,
-            //                 resultSize
-            //             );
-            //             const result = new Uint8Array(resultView);
-            //             console.log(`Result size: ${resultSize}`);
-            //             document.getElementById('image').src =
-            //                 URL.createObjectURL(
-            //                     new Blob([result.buffer], {
-            //                         type: 'image/jpeg',
-            //                     })
-            //                 );
-            //             api.freeDecodeResultData();
-            //         } else {
-            //             console.log('Unable to decode.');
-            //         }
-            //     }
-            //     api.freeBitmap();
-            // } else {
-            //     console.log('JPEG NOT ok!');
-            // }
         };
         reader.readAsArrayBuffer(event.target.files[0]);
     };
@@ -95,9 +65,10 @@ const EphemeraForm = ({ disabled }) => {
     const handleDownloadSubmit = async event => {
         event.preventDefault();
         const url = event.target.elements.namedItem('ephemeraUrl').value;
+        console.log(cleanUrl(url));
         const response = await fetch('/api/proxy', {
             method: 'POST',
-            body: url,
+            body: cleanUrl(url),
         });
         if (response.status >= 400) {
             // TODO: Error
