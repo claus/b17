@@ -12,10 +12,10 @@ const EphemeraInfo = ({ className }) => {
         <aside className={cx(styles.root, className)}>
             <h2 className={styles.headline}>Selected Ephemera</h2>
             <p className={styles.info}>
-                {`File name: ${jpeg.fileName}`}
+                {`Name: ${jpeg.fileName}`}
             </p>
             <p className={styles.info}>
-                {`File length: ${jpeg.fileLength} bytes`}
+                {`Size: ${jpeg.fileLength} bytes`}
             </p>
             <p className={styles.info}>
                 {`Image size: ${jpeg.width} x ${jpeg.height} px`}

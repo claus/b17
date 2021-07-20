@@ -37,31 +37,32 @@ const OutguessAPIProvider = ({ children }) => {
     const stdErrContent = useRef([]);
     const stdOutContent = useRef([]);
 
-    const [, setStdErr] = useState();
-    const [, setStdOut] = useState();
+    // const [, setStdErr] = useState();
+    // const [, setStdOut] = useState();
 
     const handleOutguessScriptLoad = useCallback(async () => {
         const Outguess = await OutguessModule({
             preRun: ctx => {
                 const STDOUT = 'stdout';
                 const STDERR = 'stderr';
-                const buffers = { [STDOUT]: '', [STDERR]: '' };
-                const handler = type => code => {
-                    // const buffer = buffers[type];
-                    // if (code === 10 && buffer !== '') {
-                    //     console.log(`${type}: ${buffer}`);
-                    //     if (type === STDOUT) {
-                    //         stdOutContent.current.push(buffer);
-                    //         setStdOut(JSON.stringify(stdOutContent.current));
-                    //     } else {
-                    //         stdErrContent.current.push(buffer);
-                    //         setStdErr(JSON.stringify(stdErrContent.current));
-                    //     }
-                    //     buffer = '';
-                    // } else {
-                    //     buffer += String.fromCharCode(code);
-                    // }
-                };
+                // const buffers = { [STDOUT]: '', [STDERR]: '' };
+                // const handler = type => code => {
+                //     const buffer = buffers[type];
+                //     if (code === 10 && buffer !== '') {
+                //         console.log(`${type}: ${buffer}`);
+                //         if (type === STDOUT) {
+                //             stdOutContent.current.push(buffer);
+                //             setStdOut(JSON.stringify(stdOutContent.current));
+                //         } else {
+                //             stdErrContent.current.push(buffer);
+                //             setStdErr(JSON.stringify(stdErrContent.current));
+                //         }
+                //         buffer = '';
+                //     } else {
+                //         buffer += String.fromCharCode(code);
+                //     }
+                // };
+                const handler = () => () => {};
                 ctx.stdout = handler(STDOUT);
                 ctx.stderr = handler(STDERR);
             },
@@ -79,9 +80,22 @@ const OutguessAPIProvider = ({ children }) => {
             getImageDepth: Outguess.cwrap('get_image_depth', 'number', []),
             getImageMax: Outguess.cwrap('get_image_max', 'number', []),
             decode: Outguess.cwrap('decode', 'number', ['string']),
+            freeDecodeResultData: Outguess.cwrap('free_decode_result_data', '', []),
             getDecodeResultLen: Outguess.cwrap('get_decode_result_len', 'number', []),
             getDecodeResultData: Outguess.cwrap('get_decode_result_data', 'number', []),
-            freeDecodeResultData: Outguess.cwrap('free_decode_result_data', '', []),
+            getDecodeResultType: () => {
+                const type = Outguess.cwrap('get_decode_result_type', 'number', [])();
+                switch (type) {
+                    case 1: return { mime: 'image/jpeg', ext: 'jpg' };
+                    case 2: return { mime: 'image/png', ext: 'png' };
+                    case 3: return { mime: 'image/gif', ext: 'gif' };
+                    case 4: return { mime: 'image/tiff', ext: 'tiff' };
+                    case 5: return { mime: 'application/pdf', ext: 'pdf' };
+                    case 6: return { mime: 'audio/wav', ext: 'wav' };
+                    case 7: return { mime: 'text/plain', ext: 'txt' };
+                }
+                return null;
+            }
         });
     }, []);
 

@@ -67,15 +67,27 @@
     font-size: 1.4rem;
     margin-top: 3rem;
     padding: 1.5rem 2rem;
-    border: 2px solid #666;
+    border: 2px solid;
     border-radius: 4px;
-    background-color: #070;
+
+    &.resultNegative {
+        border-color: #800;
+        background-color: #c00;
+    }
+
+    &.resultPositive {
+        border-color: #050;
+        background-color: #070;
+    }
 }
 
 .resultHeadline {
     @include haasBold;
     font-size: 2rem;
-    margin-bottom: 1rem;
+
+    .resultPositive & {
+        margin-bottom: 1rem;
+    }
 }
 
 .resultInfo {
@@ -89,8 +101,21 @@
 .resultDownload {
     @include haasMedium;
     font-size: 1.7rem;
-    text-decoration: underline;
     margin-top: 1rem;
+
+    > a {
+        display: flex;
+        align-items: center;
+    }
+
+    .icon {
+        width: 1.2em;
+        margin-right: 0.7rem;
+    }
+
+    .label {
+        text-decoration: underline;
+    }
 }
 
 .resultImage {

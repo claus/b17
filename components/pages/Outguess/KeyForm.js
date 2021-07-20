@@ -4,7 +4,7 @@ import cx from 'classnames';
 
 import { useDispatchContext, useStateContext, SET_BUSY } from 'store';
 
-import { permutations, detectFileType } from 'utils';
+import { permutations } from 'utils';
 import { useOutguessAPI } from 'components/OutguessAPIProvider';
 
 import styles from './KeyForm.module.scss';
@@ -21,6 +21,7 @@ const KeyForm = ({ className }) => {
 
     useEffect(() => {
         if (keys?.length > 0) {
+            let keyFound = false;
             dispatch({ type: SET_BUSY, busy: true });
             const keyRunner = () => {
                 const start = performance.now();
@@ -36,13 +37,14 @@ const KeyForm = ({ className }) => {
                             resultSize
                         );
                         const bytes = new Uint8Array(resultView);
-                        const fileInfo = detectFileType(bytes);
+                        const fileInfo = api.getDecodeResultType();
                         if (fileInfo) {
-                            const blob = new Blob([fileInfo.bytes], {
+                            const blob = new Blob([bytes], {
                                 type: fileInfo.mime,
                             });
                             const blobUrl = URL.createObjectURL(blob);
-                            setResult({ ...fileInfo, blobUrl });
+                            keyFound = true;
+                            setResult({ ...fileInfo, bytes, blobUrl });
                             dispatch({ type: SET_BUSY, busy: false });
                             break;
                         }
@@ -58,6 +60,9 @@ const KeyForm = ({ className }) => {
                 }
                 if (index.current === keys.length) {
                     dispatch({ type: SET_BUSY, busy: false });
+                    if (!keyFound) {
+                        setResult({ bytes: null });
+                    }
                 }
             };
             keyRunner();
@@ -72,6 +77,26 @@ const KeyForm = ({ className }) => {
         index.current = 0;
         setResult(null);
         setKeys(permutations(event.target.elements.namedItem('keys').value));
+    };
+
+    const handleInput = () => {
+        index.current = 0;
+        setResult(null);
+    };
+
+    const renderResult = () => {
+        if (!result) {
+            return null;
+        }
+        if (result.bytes === null) {
+            return <ResultNegative />;
+        }
+        return (
+            <ResultPositive
+                result={result}
+                password={keys[index.current - 1]}
+            />
+        );
     };
 
     const progressPercent = Math.round(progress * 100);
@@ -91,6 +116,7 @@ const KeyForm = ({ className }) => {
                     className={styles.input}
                     disabled={busy}
                     autoComplete="off"
+                    onInput={handleInput}
                 />
                 <input
                     type="submit"
@@ -107,26 +133,29 @@ const KeyForm = ({ className }) => {
                     <span>{progressPercent}</span>%)
                 </div>
             )}
-            {result && (
-                <Result result={result} password={keys[index.current - 1]} />
-            )}
+            {renderResult()}
         </div>
     );
 };
 
-const Result = ({ result, password }) => {
-    const fileName = `${password}.${result.ext}`;
+const ResultNegative = () => {
+    return (
+        <div className={cx(styles.result, styles.resultNegative)}>
+            <h2 className={styles.resultHeadline}>No embedded data found</h2>
+        </div>
+    );
+};
 
+const ResultPositive = ({ result, password }) => {
     useEffect(() => {
         const blobUrl = result.blobUrl;
-        return () => {
-            console.log(`revoke ${blobUrl}`);
-            URL.revokeObjectURL(blobUrl);
-        };
+        return () => URL.revokeObjectURL(blobUrl);
     }, [result.blobUrl]);
 
+    const fileName = `${password}.${result.ext}`;
+
     return (
-        <div className={styles.result}>
+        <div className={cx(styles.result, styles.resultPositive)}>
             <h2 className={styles.resultHeadline}>Embedded data found!</h2>
             <p className={styles.resultInfo}>Type: {result.mime}</p>
             <p className={styles.resultInfo}>
@@ -135,14 +164,28 @@ const Result = ({ result, password }) => {
             <p className={styles.resultInfo}>Key: {password}</p>
             <p className={styles.resultDownload}>
                 <a href={result.blobUrl} download={fileName}>
-                    Download
+                    <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                        stroke="currentColor"
+                        strokeWidth="2"
+                        strokeLinecap="round"
+                        strokeLinejoin="round"
+                        className={styles.icon}
+                    >
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>{' '}
+                    <span className={styles.label}>Download</span>
                 </a>
             </p>
         </div>
     );
 };
 
-Result.propTypes = {
+ResultPositive.propTypes = {
     result: PropTypes.object.isRequired,
     password: PropTypes.string.isRequired,
 };
