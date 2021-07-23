@@ -76,7 +76,8 @@ const KeyForm = ({ className }) => {
         event.preventDefault();
         index.current = 0;
         setResult(null);
-        setKeys(permutations(event.target.elements.namedItem('keys').value));
+        const input = event.target.elements.namedItem('keys').value;
+        setKeys(permutations(input.toLowerCase()));
     };
 
     const handleInput = () => {
