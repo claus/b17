@@ -90,7 +90,7 @@ const EphemeraForm = ({ disabled }) => {
     return (
         <Section
             headline="Ephemera"
-            info="Either upload an Ephemera from your device, or download one from the Internet (Discord links work!)"
+            info="Either upload a JPEG from your device, or download one from the Internet (Discord links work!)"
         >
             <div className={styles.root}>
                 <label className={uploadButtonClass}>
