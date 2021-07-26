@@ -28,7 +28,6 @@ const PageHead = ({
                 type="image/jpg"
                 href="/assets/images/bg-landscape.jpg"
                 media="(orientation: landscape)"
-                crossOrigin="anonymous"
             />
             <link
                 // Portrait background
@@ -38,7 +37,6 @@ const PageHead = ({
                 type="image/jpg"
                 href="/assets/images/bg-portrait.jpg"
                 media="(orientation: portrait)"
-                crossOrigin="anonymous"
             />
             {preloads.map(preload => {
                 const props = {
