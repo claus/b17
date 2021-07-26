@@ -1,7 +1,8 @@
 html,
 body {
-  padding: 0;
-  margin: 0;
+    padding: 0;
+    margin: 0;
+    background-color: #000;
 }
 
 html {
@@ -9,7 +10,7 @@ html {
     -webkit-font-smoothing: antialiased;
     -webkit-tap-highlight-color: transparent;
     box-sizing: border-box;
-    color: #000;
+    color: var(--white);
     font-size: 62.5%;
     touch-action: manipulation;
 }
@@ -20,17 +21,25 @@ html {
     box-sizing: inherit;
 }
 
-h1, h2, h3, p {
+h1,
+h2,
+h3,
+p {
     padding: 0;
     margin: 0;
     font-weight: normal;
 }
 
 a {
-  color: inherit;
-  text-decoration: none;
+    color: inherit;
+    text-decoration: none;
 }
 
 * {
-  box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+::selection {
+    color: #fff;
+    background: #444;
 }

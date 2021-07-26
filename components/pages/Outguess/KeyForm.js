@@ -7,6 +7,10 @@ import { useDispatchContext, useStateContext, SET_BUSY } from 'store';
 import { permutations } from 'utils';
 import { useOutguessAPI } from 'components/OutguessAPIProvider';
 
+import Section from 'components/ui/Section';
+import InputField from 'components/ui/InputField';
+import Button from 'components/ui/Button';
+
 import styles from './KeyForm.module.scss';
 
 const KeyForm = ({ className }) => {
@@ -103,28 +107,27 @@ const KeyForm = ({ className }) => {
     const progressPercent = Math.round(progress * 100);
 
     return (
-        <div className={cx(styles.root, className)}>
-            <h2 className={styles.headline}>Keys</h2>
+        <Section
+            headline="Keys"
+            info="Enter up to 7 comma-separated keys to test all permutations"
+            className={cx(styles.root, className)}
+        >
             <form
                 noValidate
                 onSubmit={handleKeySubmit}
                 className={styles.keyForm}
             >
-                <input
+                <InputField
                     type="url"
                     name="keys"
-                    placeholder=""
-                    className={styles.input}
                     disabled={busy}
-                    autoComplete="off"
                     onInput={handleInput}
+                    className={styles.input}
                 />
-                <input
-                    type="submit"
-                    name="submit"
-                    value="Test"
-                    className={styles.submitButton}
+                <Button
+                    label="Test"
                     disabled={busy}
+                    className={styles.submitButton}
                 />
             </form>
             {busy && (
@@ -135,14 +138,14 @@ const KeyForm = ({ className }) => {
                 </div>
             )}
             {renderResult()}
-        </div>
+        </Section>
     );
 };
 
 const ResultNegative = () => {
     return (
         <div className={cx(styles.result, styles.resultNegative)}>
-            <h2 className={styles.resultHeadline}>No embedded data found</h2>
+            <p className={styles.resultInfo}>No embedded data found</p>
         </div>
     );
 };
@@ -164,7 +167,11 @@ const ResultPositive = ({ result, password }) => {
             </p>
             <p className={styles.resultInfo}>Key: {password}</p>
             <p className={styles.resultDownload}>
-                <a href={result.blobUrl} download={fileName}>
+                <a
+                    href={result.blobUrl}
+                    download={fileName}
+                    className={styles.resultDownloadButton}
+                >
                     <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 24 24"

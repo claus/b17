@@ -5,51 +5,13 @@
     margin-top: 2rem;
 }
 
-.headline {
-    @include haasBold;
-    font-size: 2rem;
-    margin-bottom: 1rem;
-}
-
 .keyForm {
     display: flex;
-    flex: 1;
 }
 
 .input {
     flex: 1;
-    font-size: 1.4rem;
     margin-right: 1rem;
-    padding: 0.5rem 0.5rem 0.5rem 1rem;
-    border: 2px solid #666;
-    border-radius: 4px;
-    appearance: none;
-
-    &::placeholder {
-        color: #aaa;
-    }
-
-    &:disabled {
-        border-color: rgba(black, 0.25);
-        background-color: transparent;
-    }
-}
-
-.submitButton {
-    @include haasMedium;
-    padding: 0.5rem 1.5rem;
-    font-size: 1.5rem;
-    border: 2px solid #666;
-    border-radius: 4px;
-    background: white;
-    cursor: pointer;
-    appearance: none;
-
-    &:disabled {
-        cursor: auto;
-        color: rgba(black, 0.25);
-        border-color: currentColor;
-    }
 }
 
 .progress {
@@ -63,21 +25,18 @@
 
 .result {
     position: relative;
-    color: #fff;
+    color: var(--white);
     font-size: 1.4rem;
     margin-top: 3rem;
-    padding: 1.5rem 2rem;
-    border: 2px solid;
+    padding: 1.75rem 2.5rem;
     border-radius: 4px;
 
     &.resultNegative {
-        border-color: #800;
-        background-color: #c00;
+        background-color: #a008;
     }
 
     &.resultPositive {
-        border-color: #050;
-        background-color: #070;
+        background-color: #0808;
     }
 }
 
@@ -103,18 +62,17 @@
     font-size: 1.7rem;
     margin-top: 1rem;
 
-    > a {
+    .resultDownloadButton {
         display: flex;
         align-items: center;
-    }
+        width: fit-content;
+        padding: 0.3rem 0.75rem 0.4rem;
+        margin-left: -0.75rem;
 
-    .icon {
-        width: 1.2em;
-        margin-right: 0.7rem;
-    }
-
-    .label {
-        text-decoration: underline;
+        .icon {
+            width: 1.2em;
+            margin-right: 0.7rem;
+        }
     }
 }
 

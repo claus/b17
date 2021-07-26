@@ -1,0 +1,22 @@
+@import 'styles/breakpoints';
+@import 'styles/fonts';
+
+.root {
+}
+
+.headline {
+    @include haasBold;
+    font-size: 2.5rem;
+    color: var(--headline-color);
+}
+
+.info {
+    margin-top: 0.25rem;
+    font-size: 1.4rem;
+    line-height: 2rem;
+    color: var(--sub-headline-color);
+}
+
+.content {
+    margin-top: 1.5rem;
+}

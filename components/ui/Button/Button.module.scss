@@ -1,0 +1,35 @@
+@import 'styles/breakpoints';
+@import 'styles/fonts';
+
+.root {
+    @include haasMedium;
+    padding: 0.75rem 1.5rem;
+    background-color: var(--form-button-background);
+    border: 0.2rem solid var(--form-border);
+    border-radius: 0.4rem;
+    font-size: inherit;
+    color: var(--form-color);
+    cursor: pointer;
+    appearance: none;
+
+    @media (hover: hover) and (pointer: fine) {
+        &:hover {
+            background-color: var(--form-button-background-hover);
+            color: var(--white);
+        }
+    }
+
+    &:disabled,
+    &-isDisabled {
+        cursor: auto;
+        background-color: var(--disabled-form-button-background);
+        border-color: var(--disabled-form-border);
+        color: var(--disabled-form-color);
+
+        &:hover {
+            background-color: var(--disabled-form-button-background);
+            border-color: var(--disabled-form-border);
+            color: var(--disabled-form-color);
+        }
+    }
+}

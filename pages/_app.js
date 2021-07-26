@@ -1,4 +1,5 @@
 import 'styles/globals.css';
+import 'styles/colors.scss';
 
 import useLoadFonts from 'hooks/useLoadFonts';
 
@@ -6,6 +7,8 @@ import { GlobalProvider } from 'store';
 import OutguessAPIProvider from 'components/OutguessAPIProvider';
 
 import Head from 'next/head';
+
+import styles from 'styles/modules/app.module.scss';
 
 const fontFamilies = [
     'neue-haas-grotesk-display:n7',
@@ -24,7 +27,9 @@ function MyApp({ Component, pageProps }) {
                         content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=0"
                     />
                 </Head>
-                <Component {...pageProps} fontsLoaded={fontsLoaded} />
+                <main className={styles.main}>
+                    <Component {...pageProps} fontsLoaded={fontsLoaded} />
+                </main>
             </OutguessAPIProvider>
         </GlobalProvider>
     );

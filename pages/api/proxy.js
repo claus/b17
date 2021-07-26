@@ -1,6 +1,5 @@
 const proxy = async (req, res) => {
     if (req.method === 'POST') {
-        console.log('#', req.body);
         try {
             const response = await fetch(req.body);
             if (response.status < 400) {
@@ -18,14 +17,9 @@ const proxy = async (req, res) => {
                         'Content-Disposition',
                         `attachment; filename="${fileName}"`
                     );
-                    res.setHeader(
-                        'x-whatever',
-                        `hello`
-                    );
-                    console.log(res.getHeaders())
                     res.status(200).send(buffer);
                 } else {
-                    res.status(403).send(`Not a JPEG.`);
+                    res.status(403).send(`The downloaded file is not a JPEG.`);
                 }
             } else {
                 res.status(403).send(
@@ -37,7 +31,7 @@ const proxy = async (req, res) => {
         }
         return;
     }
-    res.status(405).json({ error: '405 Method not allowed.' });
+    res.status(405).send('Method not allowed (405).');
 };
 
 export default proxy;

@@ -1,5 +1,6 @@
 @import 'styles/breakpoints';
 @import 'styles/fonts';
+@import 'styles/mixins';
 
 .root {
     position: relative;
@@ -13,75 +14,32 @@
 }
 
 .input {
-    flex: 1;
-    font-size: 1.4rem;
     margin-right: 1rem;
-    padding: 0.5rem 0.5rem 0.5rem 1rem;
-    border: 2px solid #666;
-    border-radius: 4px;
-    appearance: none;
-
-    &::placeholder {
-        color: #aaa;
-    }
-
-    &:disabled {
-        border-color: rgba(black, 0.25);
-        background-color: transparent;
-    }
+    flex: 1;
 }
 
-.submitButton,
-.uploadButton {
-    @include haasMedium;
-    padding: 0.5rem 1.5rem;
-    font-size: 1.5rem;
-    border: 2px solid #666;
-    border-radius: 4px;
-    background: white;
-    cursor: pointer;
-    appearance: none;
-
-    &:disabled,
-    &-isDisabled {
-        cursor: auto;
-        color: rgba(black, 0.25);
-        border-color: currentColor;
-    }
+.submitButton {
+    @include button;
 }
 
 .uploadButton {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    user-select: none;
-
-    &:focus-within {
-        outline: 3px auto blue;
-        outline: 3px auto -webkit-focus-ring-color;
-    }
-}
-
-.uploadButtonHidden {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    clip: rect(0, 0, 0, 0);
-    clip-path: inset(50%);
-    white-space: nowrap;
-    border: 0;
-    overflow: hidden;
+    @include uploadButton;
 }
 
 .separator {
     width: auto;
-    height: 2px;
+    height: 0.1rem;
     padding: 0;
-    margin: 1rem 0.5rem;
+    margin: 1.5rem 0.5rem;
     border-style: none;
-    background-color: black;
-    opacity: 0.2;
+    background-color: var(--white);
+    opacity: 0.3;
+}
+
+.error {
+    margin-top: 1.5rem;
+    font-size: 1.4rem;
+    color: #f00;
 }
 
 @include medium {
@@ -90,15 +48,7 @@
     }
 
     .input {
-        font-size: 1.6rem;
         margin-right: 0.75rem;
-        padding: 0.5rem 0.5rem 0.5rem 1rem;
-    }
-
-    .submitButton,
-    .uploadButton {
-        padding: 0 1.5rem;
-        font-size: 1.5rem;
     }
 
     .separator {
@@ -110,7 +60,6 @@
 
 @include large {
     .input {
-        font-size: 1.8rem;
         margin-right: 1rem;
     }
 
