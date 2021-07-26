@@ -1,9 +1,6 @@
 @import 'styles/breakpoints';
 @import 'styles/fonts';
 
-.root {
-}
-
 .headline {
     @include haasBold;
     font-size: 2.5rem;

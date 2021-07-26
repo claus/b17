@@ -17,7 +17,7 @@ const Section = ({ headline, info, children, className }) => {
 Section.propTypes = {
     headline: PropTypes.string.isRequired,
     subHeadline: PropTypes.string,
-    children: PropTypes.string,
+    children: PropTypes.node,
     className: PropTypes.string,
 };
 
