@@ -67,7 +67,7 @@ PageHead.propTypes = {
 };
 
 PageHead.defaultProps = {
-    image: '/assets/images/og.jpg',
+    image: 'https://thedoor.dev/assets/images/og.jpg',
     preloads: [],
 };
 
