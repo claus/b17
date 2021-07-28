@@ -5,8 +5,16 @@
     margin-top: 2rem;
 }
 
-.keyForm {
+.keyFormInput {
     display: flex;
+}
+
+.checkboxes {
+    margin-bottom: 1.5rem;
+
+    .checkbox {
+        padding: 0.3rem 0;
+    }
 }
 
 .input {

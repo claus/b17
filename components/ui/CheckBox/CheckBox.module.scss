@@ -1,0 +1,64 @@
+.root {
+    position: relative;
+    font-size: 1.6rem;
+
+    input[type='checkbox'] {
+        position: absolute;
+        left: -9999px;
+
+        & + label {
+            position: relative;
+            display: flex;
+            align-items: center;
+            width: fit-content;
+            user-select: none;
+            cursor: pointer;
+
+            &::before {
+                content: '';
+                width: 1em;
+                height: 1em;
+                padding: 0.1rem;
+                margin-right: 0.75rem;
+                border: 0.2rem solid var(--form-border);
+                border-radius: 0.4rem;
+            }
+        }
+
+        // Checked State
+        &:checked + label {
+            &::before {
+                background: linear-gradient(
+                        var(--form-border),
+                        var(--form-border)
+                    )
+                    50% 50% / 0.8rem 0.8rem no-repeat;
+            }
+        }
+
+        // Disabled State
+        &:disabled {
+            & + label {
+                color: var(--disabled-form-color);
+                cursor: default;
+
+                &:before {
+                    border-color: var(--disabled-form-border);
+                    background: transparent;
+                }
+            }
+
+            // Disabled Checked
+            &:checked + label {
+                &:before {
+                    border-color: var(--disabled-form-border);
+                    background: linear-gradient(
+                            var(--disabled-form-border),
+                            var(--disabled-form-border)
+                        )
+                        50% 50% / 0.8rem 0.8rem no-repeat;
+                }
+            }
+        }
+    }
+}

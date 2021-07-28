@@ -43,10 +43,7 @@ function permutator(inputArr) {
 }
 
 export function permutations(input) {
-    const rawKeys = input
-        .split(',')
-        .map(rawKey => rawKey.replace(/\s+/g, '').toLowerCase())
-        .slice(0, 7);
+    const rawKeys = input.slice(0, 7).filter(key => key?.length > 0);
     const keys = permutator(rawKeys).map(key => key.join(''));
     return keys;
 }

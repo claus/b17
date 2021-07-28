@@ -1,6 +1,7 @@
 import 'styles/globals.css';
 import 'styles/colors.scss';
 
+import useGA4 from 'hooks/useGA4';
 import useLoadFonts from 'hooks/useLoadFonts';
 
 import { GlobalProvider } from 'store';
@@ -17,6 +18,7 @@ const fontFamilies = [
 ];
 
 function MyApp({ Component, pageProps }) {
+    useGA4();
     const fontsLoaded = useLoadFonts(fontFamilies);
     return (
         <GlobalProvider>

@@ -1,8 +1,14 @@
-import React, { useRef, useEffect, useState } from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
+import accents from 'remove-accents';
 
-import { useDispatchContext, useStateContext, SET_BUSY } from 'store';
+import {
+    useDispatchContext,
+    useStateContext,
+    SET_BUSY,
+    OUTGUESS_SET_OPTIONS,
+} from 'store';
 
 import { permutations } from 'utils';
 import { useOutguessAPI } from 'components/OutguessAPIProvider';
@@ -10,18 +16,47 @@ import { useOutguessAPI } from 'components/OutguessAPIProvider';
 import Section from 'components/ui/Section';
 import InputField from 'components/ui/InputField';
 import Button from 'components/ui/Button';
+import CheckBox from 'components/ui/CheckBox';
 
 import styles from './KeyForm.module.scss';
 
 const KeyForm = ({ className }) => {
     const api = useOutguessAPI();
     const dispatch = useDispatchContext();
-    const { busy } = useStateContext();
+    const { busy, outguessOptions } = useStateContext();
     const [keys, setKeys] = useState(null);
+    const [keysValid, setKeysValid] = useState(false);
     const [progress, setProgress] = useState(0);
     const [result, setResult] = useState(null);
+    const formRef = useRef();
     const raf = useRef();
     const index = useRef(0);
+
+    const getKeys = useCallback(() => {
+        if (outguessOptions.defaultKey) {
+            return ['Default key'];
+        }
+        return formRef.current.elements
+            .namedItem('keys')
+            .value.split(',')
+            .map(key => {
+                key = key.trim();
+                if (outguessOptions.lowercase) {
+                    key = key.toLowerCase();
+                }
+                if (outguessOptions.noWhitespace) {
+                    key = key.replace(/\s+/g, '');
+                }
+                if (outguessOptions.noAccents) {
+                    key = accents.remove(key);
+                }
+                if (outguessOptions.noNonAlphaNum) {
+                    key = key.replace(/[^a-zA-Z0-9]/g, '');
+                }
+                return key;
+            })
+            .filter(key => key?.length > 0);
+    }, [outguessOptions]);
 
     useEffect(() => {
         if (keys?.length > 0) {
@@ -76,16 +111,38 @@ const KeyForm = ({ className }) => {
         };
     }, [keys, dispatch, api]);
 
+    useEffect(() => {
+        setKeysValid(getKeys().length > 0);
+    }, [outguessOptions, getKeys]);
+
     const handleKeySubmit = event => {
         event.preventDefault();
         index.current = 0;
         setResult(null);
-        const input = event.target.elements.namedItem('keys').value;
-        setKeys(permutations(input.toLowerCase()));
+        setKeys(permutations(getKeys()));
     };
 
     const handleInput = () => {
         index.current = 0;
+        setResult(null);
+        setKeysValid(getKeys().length > 0);
+    };
+
+    const handleChange = () => {
+        const item = name => formRef.current.elements.namedItem(name);
+        const defaultKey = item('outguess-options-defaultkey').checked;
+        const lowercase = item('outguess-options-lowercase').checked;
+        const noWhitespace = item('outguess-options-no-whitespace').checked;
+        const noAccents = item('outguess-options-no-accents').checked;
+        const noNonAlphaNum = item('outguess-options-no-nonalphanum').checked;
+        dispatch({
+            type: OUTGUESS_SET_OPTIONS,
+            defaultKey,
+            lowercase,
+            noWhitespace,
+            noAccents,
+            noNonAlphaNum,
+        });
         setResult(null);
     };
 
@@ -116,19 +173,72 @@ const KeyForm = ({ className }) => {
                 noValidate
                 onSubmit={handleKeySubmit}
                 className={styles.keyForm}
+                ref={formRef}
             >
-                <InputField
-                    type="url"
-                    name="keys"
-                    disabled={busy}
-                    onInput={handleInput}
-                    className={styles.input}
-                />
-                <Button
-                    label="Test"
-                    disabled={busy}
-                    className={styles.submitButton}
-                />
+                <div className={styles.checkboxes}>
+                    <fieldset disabled={busy}>
+                        <CheckBox
+                            id="outguess-options-defaultkey"
+                            name="outguess-options-defaultkey"
+                            label='Test for "Default key"'
+                            checked={outguessOptions.defaultKey}
+                            onChange={handleChange}
+                            className={styles.checkbox}
+                        />
+                        <CheckBox
+                            id="outguess-options-lowercase"
+                            name="outguess-options-lowercase"
+                            label="Lowercase"
+                            checked={outguessOptions.lowercase}
+                            disabled={outguessOptions.defaultKey}
+                            onChange={handleChange}
+                            className={styles.checkbox}
+                        />
+                        <CheckBox
+                            id="outguess-options-no-whitespace"
+                            name="outguess-options-no-whitespace"
+                            label="Remove whitespace"
+                            checked={outguessOptions.noWhitespace}
+                            disabled={outguessOptions.defaultKey}
+                            onChange={handleChange}
+                            className={styles.checkbox}
+                        />
+                        <CheckBox
+                            id="outguess-options-no-accents"
+                            name="outguess-options-no-accents"
+                            label="Convert accented characters"
+                            checked={outguessOptions.noAccents}
+                            disabled={outguessOptions.defaultKey}
+                            onChange={handleChange}
+                            className={styles.checkbox}
+                        />
+                        <CheckBox
+                            id="outguess-options-no-nonalphanum"
+                            name="outguess-options-no-nonalphanum"
+                            label="Remove non-alphanumeric characters"
+                            checked={outguessOptions.noNonAlphaNum}
+                            disabled={outguessOptions.defaultKey}
+                            onChange={handleChange}
+                            className={styles.checkbox}
+                        />
+                    </fieldset>
+                </div>
+                <div className={styles.keyFormInput}>
+                    <InputField
+                        type="url"
+                        name="keys"
+                        disabled={busy || outguessOptions.defaultKey}
+                        onInput={handleInput}
+                        className={styles.input}
+                    />
+                    <Button
+                        label="Test"
+                        disabled={
+                            busy || (!keysValid && !outguessOptions.defaultKey)
+                        }
+                        className={styles.submitButton}
+                    />
+                </div>
             </form>
             {busy && (
                 <div className={styles.progress}>
