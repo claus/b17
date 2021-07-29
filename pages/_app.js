@@ -1,7 +1,10 @@
 import 'styles/globals.css';
 import 'styles/colors.scss';
 
-import useGA4 from 'hooks/useGA4';
+import { useEffect } from 'react';
+import { useRouter } from 'next/router';
+import * as ga from 'utils/ga';
+
 import useLoadFonts from 'hooks/useLoadFonts';
 
 import { GlobalProvider } from 'store';
@@ -18,8 +21,15 @@ const fontFamilies = [
 ];
 
 function MyApp({ Component, pageProps }) {
-    useGA4();
+    const router = useRouter();
     const fontsLoaded = useLoadFonts(fontFamilies);
+
+    useEffect(() => {
+        const onRouteChange = url => ga.pageview(url);
+        router.events.on('routeChangeComplete', onRouteChange);
+        return () => router.events.off('routeChangeComplete', onRouteChange);
+    }, [router.events]);
+
     return (
         <GlobalProvider>
             <OutguessAPIProvider>

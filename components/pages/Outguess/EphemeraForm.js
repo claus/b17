@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import PropTypes from 'prop-types';
 import cx from 'classnames';
 
+import * as ga from 'utils/ga';
 import { cleanUrl } from 'utils';
 import { useDispatchContext, useStateContext, SET_JPEG } from 'store';
 import { useOutguessAPI } from 'components/OutguessAPIProvider';
@@ -38,6 +39,13 @@ const EphemeraForm = ({ disabled }) => {
                     ),
                 },
             });
+            ga.event({
+                action: 'outguess_decode_jpeg',
+                params: {
+                    event_category: 'outguess',
+                    event_label: fileName,
+                },
+            });
         } else {
             dispatch({ type: SET_JPEG, jpeg: null });
             setError('Error decoding the file. Are you sure this is a JPEG?');
@@ -57,6 +65,13 @@ const EphemeraForm = ({ disabled }) => {
                 setError('The uploaded file is not a JPEG.');
             } else {
                 setJpeg(bytes, fileName);
+                ga.event({
+                    action: 'outguess_upload_jpeg',
+                    params: {
+                        event_category: 'outguess',
+                        event_label: fileName,
+                    },
+                });
             }
         };
         reader.readAsArrayBuffer(event.target.files[0]);
@@ -80,6 +95,13 @@ const EphemeraForm = ({ disabled }) => {
             const buffer = await response.arrayBuffer();
             const bytes = new Uint8Array(buffer);
             setJpeg(bytes, fileName?.[1] ?? '');
+            ga.event({
+                action: 'outguess_download_jpeg',
+                params: {
+                    event_category: 'outguess',
+                    event_label: cleanUrl(url),
+                },
+            });
         }
     };
 

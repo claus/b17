@@ -10,6 +10,7 @@ import {
     OUTGUESS_SET_OPTIONS,
 } from 'store';
 
+import * as ga from 'utils/ga';
 import { permutations } from 'utils';
 import { useOutguessAPI } from 'components/OutguessAPIProvider';
 
@@ -85,6 +86,13 @@ const KeyForm = ({ className }) => {
                             keyFound = true;
                             setResult({ ...fileInfo, bytes, blobUrl });
                             dispatch({ type: SET_BUSY, busy: false });
+                            ga.event({
+                                action: 'outguess_test_found',
+                                params: {
+                                    event_category: 'outguess',
+                                    event_label: key,
+                                },
+                            });
                             break;
                         }
                         api.freeDecodeResultData();
@@ -119,7 +127,15 @@ const KeyForm = ({ className }) => {
         event.preventDefault();
         index.current = 0;
         setResult(null);
-        setKeys(permutations(getKeys()));
+        const keys = getKeys();
+        setKeys(permutations(keys));
+        ga.event({
+            action: 'outguess_test_keys',
+            params: {
+                event_category: 'outguess',
+                event_label: keys.join(', '),
+            },
+        });
     };
 
     const handleInput = () => {

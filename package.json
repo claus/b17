@@ -9,7 +9,6 @@
   },
   "dependencies": {
     "framer-motion": "^4.1.17",
-    "ga-4-react": "^0.1.281",
     "guess-file-type": "^1.0.1",
     "next": "11.0.1",
     "node-fetch": "^2.6.1",
