@@ -1,18 +1,19 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
-import cx from 'classnames';
 
 import * as ga from 'utils/ga';
 import { cleanUrl } from 'utils';
 import { useDispatchContext, useStateContext, SET_JPEG } from 'store';
 import { useOutguessAPI } from 'components/OutguessAPIProvider';
 
+import UploadButton from 'components/ui/UploadButton';
+import Button from 'components/ui/Button';
 import Section from 'components/ui/Section';
 import InputField from 'components/ui/InputField';
 
 import styles from './EphemeraForm.module.scss';
 
-const EphemeraForm = ({ disabled }) => {
+const EphemeraForm = () => {
     const api = useOutguessAPI();
     const dispatch = useDispatchContext();
     const { jpeg, busy } = useStateContext();
@@ -27,6 +28,7 @@ const EphemeraForm = ({ disabled }) => {
         api.ctx.HEAP8.set(byteArray, pointer);
         const result = api.readBitmap(pointer, byteArray.byteLength);
         if (result === 0) {
+            ga.event('outguess', 'outguess_decode_jpeg', fileName);
             dispatch({
                 type: SET_JPEG,
                 jpeg: {
@@ -39,20 +41,18 @@ const EphemeraForm = ({ disabled }) => {
                     ),
                 },
             });
-            ga.event({
-                action: 'outguess_decode_jpeg',
-                params: {
-                    event_category: 'outguess',
-                    event_label: fileName,
-                },
-            });
         } else {
             dispatch({ type: SET_JPEG, jpeg: null });
             setError('Error decoding the file. Are you sure this is a JPEG?');
         }
     };
 
-    const handleUploadChange = () => {
+    const handleUploadClick = event => {
+        event.target.value = null;
+        setError(null);
+    }
+
+    const handleUpload = () => {
         if (event.target.files.length === 0) return;
         setError(null);
         dispatch({ type: SET_JPEG, jpeg: null });
@@ -64,24 +64,22 @@ const EphemeraForm = ({ disabled }) => {
             if (bytes.byteLength < 2 || bytes[0] != 0xff || bytes[1] != 0xd8) {
                 setError('The uploaded file is not a JPEG.');
             } else {
+                ga.event('outguess', 'outguess_upload_jpeg', fileName);
                 setJpeg(bytes, fileName);
-                ga.event({
-                    action: 'outguess_upload_jpeg',
-                    params: {
-                        event_category: 'outguess',
-                        event_label: fileName,
-                    },
-                });
             }
         };
         reader.readAsArrayBuffer(event.target.files[0]);
     };
 
-    const handleDownloadSubmit = async event => {
+    const handleDownload = async event => {
         event.preventDefault();
         setError(null);
         dispatch({ type: SET_JPEG, jpeg: null });
         const url = event.target.elements.namedItem('ephemeraUrl').value;
+        if (!url || url.length === 0) {
+            setError('Please enter a URL');
+            return;
+        }
         const response = await fetch('/api/proxy', {
             method: 'POST',
             body: cleanUrl(url),
@@ -94,20 +92,10 @@ const EphemeraForm = ({ disabled }) => {
             const fileName = contentDisp.match(/^attachment; filename="(.*)"$/);
             const buffer = await response.arrayBuffer();
             const bytes = new Uint8Array(buffer);
+            ga.event('outguess', 'outguess_download_jpeg', cleanUrl(url));
             setJpeg(bytes, fileName?.[1] ?? '');
-            ga.event({
-                action: 'outguess_download_jpeg',
-                params: {
-                    event_category: 'outguess',
-                    event_label: cleanUrl(url),
-                },
-            });
         }
     };
-
-    const uploadButtonClass = cx(styles.uploadButton, {
-        [styles['uploadButton-isDisabled']]: disabled || busy,
-    });
 
     return (
         <Section
@@ -115,35 +103,27 @@ const EphemeraForm = ({ disabled }) => {
             info="Either upload a JPEG from your device, or download one from the Internet (Discord links work!)"
         >
             <div className={styles.root}>
-                <label className={uploadButtonClass}>
-                    <input
-                        type="file"
-                        onChange={handleUploadChange}
-                        className={styles.uploadButtonHidden}
-                        disabled={disabled || busy}
-                    />
-                    Upload
-                </label>
+                <UploadButton
+                    label="Upload"
+                    accept="image/jpeg"
+                    onChange={handleUpload}
+                    onClick={handleUploadClick}
+                    disabled={busy}
+                />
                 <hr className={styles.separator} />
                 <form
                     noValidate
-                    onSubmit={handleDownloadSubmit}
+                    onSubmit={handleDownload}
                     className={styles.ephemeraDownloadForm}
                 >
                     <InputField
                         type="url"
                         name="ephemeraUrl"
                         placeholder="https://example.com/ephemera.jpeg"
-                        disabled={disabled || busy}
+                        disabled={busy}
                         className={styles.input}
                     />
-                    <input
-                        type="submit"
-                        name="submit"
-                        value="Load"
-                        className={styles.submitButton}
-                        disabled={disabled || busy}
-                    />
+                    <Button label="Load" disabled={busy} />
                 </form>
             </div>
             {error && <div className={styles.error}>{error}</div>}
@@ -152,7 +132,6 @@ const EphemeraForm = ({ disabled }) => {
 };
 
 EphemeraForm.propTypes = {
-    disabled: PropTypes.bool,
     className: PropTypes.string,
 };
 

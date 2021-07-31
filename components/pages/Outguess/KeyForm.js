@@ -37,7 +37,7 @@ const KeyForm = ({ className }) => {
         if (outguessOptions.defaultKey) {
             return ['Default key'];
         }
-        return formRef.current.elements
+        const converted = formRef.current.elements
             .namedItem('keys')
             .value.split(',')
             .map(key => {
@@ -57,6 +57,7 @@ const KeyForm = ({ className }) => {
                 return key;
             })
             .filter(key => key?.length > 0);
+        return converted;
     }, [outguessOptions]);
 
     useEffect(() => {
@@ -86,13 +87,7 @@ const KeyForm = ({ className }) => {
                             keyFound = true;
                             setResult({ ...fileInfo, bytes, blobUrl });
                             dispatch({ type: SET_BUSY, busy: false });
-                            ga.event({
-                                action: 'outguess_test_found',
-                                params: {
-                                    event_category: 'outguess',
-                                    event_label: key,
-                                },
-                            });
+                            ga.event('outguess', 'outguess_test_found', key);
                             break;
                         }
                         api.freeDecodeResultData();
@@ -125,17 +120,11 @@ const KeyForm = ({ className }) => {
 
     const handleKeySubmit = event => {
         event.preventDefault();
+        const keys = getKeys();
         index.current = 0;
         setResult(null);
-        const keys = getKeys();
         setKeys(permutations(keys));
-        ga.event({
-            action: 'outguess_test_keys',
-            params: {
-                event_category: 'outguess',
-                event_label: keys.join(', '),
-            },
-        });
+        ga.event('outguess', 'outguess_test_keys', keys.join(', '));
     };
 
     const handleInput = () => {
@@ -178,6 +167,9 @@ const KeyForm = ({ className }) => {
     };
 
     const progressPercent = Math.round(progress * 100);
+
+    const inputDisabled = busy || outguessOptions.defaultKey;
+    const buttonDisabled = busy || (!keysValid && !outguessOptions.defaultKey);
 
     return (
         <Section
@@ -243,15 +235,13 @@ const KeyForm = ({ className }) => {
                     <InputField
                         type="url"
                         name="keys"
-                        disabled={busy || outguessOptions.defaultKey}
+                        disabled={inputDisabled}
                         onInput={handleInput}
                         className={styles.input}
                     />
                     <Button
                         label="Test"
-                        disabled={
-                            busy || (!keysValid && !outguessOptions.defaultKey)
-                        }
+                        disabled={buttonDisabled}
                         className={styles.submitButton}
                     />
                 </div>

@@ -1,0 +1,56 @@
+@import 'styles/breakpoints';
+@import 'styles/fonts';
+
+.root {
+    @include haasMedium;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0.75rem 1.5rem;
+    background-color: var(--form-button-background);
+    border: 0.2rem solid var(--form-border);
+    border-radius: 0.4rem;
+    font-size: inherit;
+    color: var(--form-color);
+    cursor: pointer;
+    appearance: none;
+    user-select: none;
+
+    .uploadButtonHidden {
+        position: absolute;
+        width: 1px;
+        height: 1px;
+        padding: 0;
+        clip: rect(0, 0, 0, 0);
+        clip-path: inset(50%);
+        white-space: nowrap;
+        border: 0;
+        overflow: hidden;
+    }
+
+    &:focus-within {
+        outline: 3px auto blue;
+        outline: 3px auto -webkit-focus-ring-color;
+    }
+
+    @media (hover: hover) and (pointer: fine) {
+        &:hover {
+            background-color: var(--form-button-background-hover);
+            color: var(--white);
+        }
+    }
+
+    &:disabled,
+    &-isDisabled {
+        cursor: auto;
+        background-color: var(--disabled-form-button-background);
+        border-color: var(--disabled-form-border);
+        color: var(--disabled-form-color);
+
+        &:hover {
+            background-color: var(--disabled-form-button-background);
+            border-color: var(--disabled-form-border);
+            color: var(--disabled-form-color);
+        }
+    }
+}

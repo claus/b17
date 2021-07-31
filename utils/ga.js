@@ -4,6 +4,9 @@ export const pageview = url => {
     });
 };
 
-export const event = ({ action, params }) => {
-    window.gtag('event', action, params);
+export const event = (category, action, label) => {
+    window.gtag('event', action, {
+        event_category: category,
+        event_label: label,
+    });
 };

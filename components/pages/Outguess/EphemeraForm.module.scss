@@ -1,6 +1,5 @@
 @import 'styles/breakpoints';
 @import 'styles/fonts';
-@import 'styles/mixins';
 
 .root {
     position: relative;
@@ -16,14 +15,6 @@
 .input {
     margin-right: 1rem;
     flex: 1;
-}
-
-.submitButton {
-    @include button;
-}
-
-.uploadButton {
-    @include uploadButton;
 }
 
 .separator {
