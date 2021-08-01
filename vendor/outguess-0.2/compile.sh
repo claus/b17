@@ -17,5 +17,5 @@ emcc -O3 \
     typedetect.o \
     md5.o \
     -o outguess.js && \
-cp outguess.js ../../public/assets/outguess && \
-cp outguess.wasm ../../public/assets/outguess
+mv outguess.js ../../public/assets/outguess && \
+mv outguess.wasm ../../public/assets/outguess

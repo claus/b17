@@ -63,6 +63,7 @@ const KeyForm = ({ className }) => {
     useEffect(() => {
         if (keys?.length > 0) {
             let keyFound = false;
+            const startTime = performance.now();
             dispatch({ type: SET_BUSY, busy: true });
             const keyRunner = () => {
                 const start = performance.now();
@@ -101,6 +102,8 @@ const KeyForm = ({ className }) => {
                     }
                 }
                 if (index.current === keys.length) {
+                    const endTime = performance.now();
+                    console.log(`${(endTime - startTime) / 1000} sec`);
                     dispatch({ type: SET_BUSY, busy: false });
                     if (!keyFound) {
                         setResult({ bytes: null });

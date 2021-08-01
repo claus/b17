@@ -10,7 +10,7 @@
 #define RESULT_TIFF 4
 #define RESULT_PDF 5
 #define RESULT_WAV 6
-#define RESULT_ASCII 7
+#define RESULT_UTF8 7
 
 int detect_jpeg(uint8_t *data, uint32_t len);
 int detect_png(uint8_t *data, uint32_t len);
