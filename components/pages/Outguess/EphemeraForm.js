@@ -47,12 +47,11 @@ const EphemeraForm = () => {
         }
     };
 
-    const handleUploadClick = event => {
-        event.target.value = null;
+    const handleUploadClick = () => {
         setError(null);
     }
 
-    const handleUpload = () => {
+    const handleUpload = event => {
         if (event.target.files.length === 0) return;
         setError(null);
         dispatch({ type: SET_JPEG, jpeg: null });
@@ -67,6 +66,7 @@ const EphemeraForm = () => {
                 ga.event('outguess', 'outguess_upload_jpeg', fileName);
                 setJpeg(bytes, fileName);
             }
+            event.target.value = null;
         };
         reader.readAsArrayBuffer(event.target.files[0]);
     };

@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8" />
+    <style>
+      body {
+        font: 16px sans-serif;
+        padding: 20px;
+      }
+      #upload,
+      #key {
+        display: block;
+        font: 16px sans-serif;
+        width: 100%;
+        margin-bottom: 10px;
+      }
+      #image {
+        display: block;
+        margin-top: 10px;
+      }
+    </style>
+  </head>
+  <body>
+    <input id="upload" type="file" disabled />
+    <label for="key">Key:</label>
+    <input id="key" name="key" type="text" placeholder="Enter Key" value="112313091989" />
+    <img id="image" />
+
+    <script src="outguess.js"></script>
+    <script>
+      let api;
+      const el = document.querySelector("#upload");
+
+      Module.onRuntimeInitialized = async () => {
+        // prettier-ignore
+        api = {
+          createBuffer: Module.cwrap("create_buffer", "number", ["number"]),
+          readBitmap: Module.cwrap("read_bitmap", "number", ["number", "number"]),
+          freeBitmap: Module.cwrap("free_bitmap", "", []),
+          decode: Module.cwrap("decode", "number", ["string"]),
+          getDecodeResultLen: Module.cwrap("get_decode_result_len", "number", []),
+          getDecodeResultData: Module.cwrap("get_decode_result_data", "number", []),
+          freeDecodeResultData: Module.cwrap("free_decode_result_data", "", []),
+        };
+        el.removeAttribute("disabled");
+      };
+
+      Module.preRun = () => {
+        let stderrBuffer = "";
+
+        function stdin() {}
+        function stdout(code) {}
+
+        function stderr(code) {
+          if (code === "\n".charCodeAt(0) && stderrBuffer !== "") {
+            console.log(stderrBuffer);
+            stderrBuffer = "";
+          } else {
+            stderrBuffer += String.fromCharCode(code);
+          }
+        }
+
+        FS.init(stdin, stdout, stderr);
+      };
+
+      el.addEventListener("change", (event) => {
+        const reader = new FileReader();
+        reader.onload = function () {
+          const arrayBuffer = this.result;
+          const array = new Uint8Array(arrayBuffer);
+          const p = api.createBuffer(array.byteLength);
+          Module.HEAP8.set(array, p);
+          if (api.readBitmap(p, array.byteLength) === 0) {
+            console.log("JPEG is ok.");
+            for (let i = 0; i < 10000; i++) {
+            const res = api.decode("112313091989");
+            if (res === 0) {
+              const resultPointer = api.getDecodeResultData();
+              const resultSize = api.getDecodeResultLen();
+              const resultView = new Uint8Array(
+                Module.HEAP8.buffer,
+                resultPointer,
+                resultSize
+              );
+              const result = new Uint8Array(resultView);
+              console.log(`Result size: ${resultSize}`);
+              document.getElementById("image").src = URL.createObjectURL(
+                new Blob([result.buffer], { type: "image/jpeg" })
+              );
+              api.freeDecodeResultData();
+            } else {
+              console.log("Unable to decode.");
+            }
+            }
+            api.freeBitmap();
+          } else {
+            console.log("JPEG NOT ok!");
+          }
+        };
+        reader.readAsArrayBuffer(event.target.files[0]);
+      });
+    </script>
+  </body>
+</html>

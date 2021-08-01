@@ -42,10 +42,10 @@
 
     &:disabled,
     &-isDisabled {
-        cursor: auto;
         background-color: var(--disabled-form-button-background);
         border-color: var(--disabled-form-border);
         color: var(--disabled-form-color);
+        cursor: default;
 
         &:hover {
             background-color: var(--disabled-form-button-background);

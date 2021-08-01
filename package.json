@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "outguess": "cd vendor/outguess-0.2 && ./compile.sh"
   },
   "dependencies": {
     "framer-motion": "^4.1.17",
