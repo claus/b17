@@ -264,7 +264,7 @@ const KeyForm = ({ className }) => {
 const ResultNegative = () => {
     return (
         <div className={cx(styles.result, styles.resultNegative)}>
-            <p className={styles.resultInfo}>No embedded data found</p>
+            No embedded data found
         </div>
     );
 };
@@ -280,11 +280,15 @@ const ResultPositive = ({ result, password }) => {
     return (
         <div className={cx(styles.result, styles.resultPositive)}>
             <h2 className={styles.resultHeadline}>Embedded data found!</h2>
-            <p className={styles.resultInfo}>Type: {result.mime}</p>
             <p className={styles.resultInfo}>
-                Size: {result.bytes.byteLength} bytes
+                Key: <span className={styles.resultKey}>{password}</span>
             </p>
-            <p className={styles.resultInfo}>Key: {password}</p>
+            <p className={styles.resultInfo}>
+                File type: <span>{result.mime}</span>
+            </p>
+            <p className={styles.resultInfo}>
+                File size: <span>{result.bytes.byteLength} bytes</span>
+            </p>
             <p className={styles.resultDownload}>
                 <a
                     href={result.blobUrl}

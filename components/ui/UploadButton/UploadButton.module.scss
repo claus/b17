@@ -40,6 +40,10 @@
         }
     }
 
+    &:active {
+        background-color: var(--form-button-background-active);
+    }
+
     &:disabled,
     &-isDisabled {
         background-color: var(--disabled-form-button-background);

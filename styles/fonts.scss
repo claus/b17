@@ -23,7 +23,8 @@ $leoTypeface: LeoTypeface, serif !default;
     font-weight: 700;
 }
 
-@mixin roboto {
-    font-family: roboto, sans-serif;
+@mixin interstate {
+    font-family: interstate-mono, monospace;
     font-weight: 400;
+    letter-spacing: -0.1rem;
 }
