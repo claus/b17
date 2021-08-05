@@ -20,7 +20,13 @@ const EphemeraInfo = ({ className }) => {
     return (
         <aside className={cx(styles.root, className)}>
             <Section headline="Selected Ephemera" info={info}>
-                <img src={jpeg.objectURL} alt="" className={styles.image} />
+                <img
+                    width={jpeg.width}
+                    height={jpeg.height}
+                    src={jpeg.objectURL}
+                    alt=""
+                    className={styles.image}
+                />
             </Section>
         </aside>
     );
