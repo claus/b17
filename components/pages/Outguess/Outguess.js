@@ -3,6 +3,7 @@ import cx from 'classnames';
 import { useStateContext } from 'store';
 
 import Head from 'components/misc/Head';
+import Header from 'components/ui/Header';
 
 import EphemeraForm from './EphemeraForm';
 import EphemeraInfo from './EphemeraInfo';
@@ -25,10 +26,7 @@ const OutguessPage = ({ fontsLoaded }) => {
                 url="https://thedoor.dev/outguess"
             />
             <main className={styles.main}>
-                <header className={styles.header}>
-                    <span className={styles.door}>∩</span>
-                    <h1 className={styles.title}>The Outguess Device</h1>
-                </header>
+                <Header title="The Outguess Device" />
                 <EphemeraForm />
                 {jpeg && (
                     <div className={styles.extract}>

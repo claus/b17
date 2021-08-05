@@ -1,0 +1,52 @@
+@import 'styles/breakpoints';
+@import 'styles/fonts';
+
+.root {
+    @include haasDisplayBold;
+    display: flex;
+    align-items: baseline;
+    margin-bottom: 3rem;
+}
+
+.door {
+    user-select: none;
+    font-size: 6rem;
+    line-height: 2.5rem;
+}
+
+.title {
+    flex: 1;
+    margin-left: 1rem;
+    font-size: 2.5rem;
+    line-height: 2.5rem;
+}
+
+@include medium {
+    .root {
+        margin-bottom: 4rem;
+    }
+
+    .door {
+        font-size: 9rem;
+        line-height: 4rem;
+    }
+
+    .title {
+        margin-left: 2rem;
+        font-size: 4rem;
+        line-height: 4rem;
+    }
+}
+
+@include large {
+    .door {
+        font-size: 12rem;
+        line-height: 5rem;
+    }
+
+    .title {
+        margin-left: 2.5rem;
+        font-size: 5rem;
+        line-height: 5rem;
+    }
+}
