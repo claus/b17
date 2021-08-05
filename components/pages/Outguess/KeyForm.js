@@ -236,7 +236,7 @@ const KeyForm = ({ className }) => {
                 </div>
                 <div className={styles.keyFormInput}>
                     <InputField
-                        type="url"
+                        type="text"
                         name="keys"
                         disabled={inputDisabled}
                         onInput={handleInput}
