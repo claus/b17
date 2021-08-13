@@ -1,0 +1,121 @@
+@import 'styles/breakpoints';
+@import 'styles/fonts';
+
+.root {
+    @include haasRoman;
+    padding: 1.5rem 2.5rem 20rem;
+
+    &-isHidden {
+        visibility: hidden;
+    }
+}
+
+.table {
+    @include interstate;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    width: 100%;
+    margin-top: 4rem;
+    font-size: 1.8rem;
+    line-height: 1.5;
+}
+
+.block {
+    // &:nth-child(8n+1),
+    // &:nth-child(8n+3),
+    // &:nth-child(8n+5),
+    // &:nth-child(8n+7) {
+    //     grid-row: 1;
+    // }
+}
+
+.row {
+    display: flex;
+    justify-content: center;
+    margin-right: 1rem;
+    white-space: pre;
+
+    &.control {
+        color: #f88;
+    }
+    &.special {
+        color: #88e;
+    }
+    &.number {
+        color: #8d8;
+    }
+    &.upper,
+    &.lower {
+        color: #dd8;
+    }
+}
+
+.col {
+    &:not(:last-child) {
+        margin-right: 1.5rem;
+    }
+
+    .dimmed {
+        opacity: 0.7;
+    }
+
+    &.bin::before {
+        content: '0b';
+    }
+    &.hex::before {
+        content: '0x';
+    }
+    &.bin::before,
+    &.hex::before {
+        margin-right: 0.1rem;
+        opacity: 0.45;
+    }
+}
+
+@media (min-width: 800px) {
+    .table {
+        grid-template-columns: repeat(4, 1fr);
+        font-size: 1.4rem;
+        line-height: 1.4;
+    }
+
+    .block {
+        &:nth-child(8n+1),
+        &:nth-child(8n+3),
+        &:nth-child(8n+5),
+        &:nth-child(8n+7) {
+            grid-row: 1;
+        }
+        &:nth-child(8n+2),
+        &:nth-child(8n+4),
+        &:nth-child(8n+6),
+        &:nth-child(8n+8) {
+            grid-row: 2;
+        }
+    }
+}
+
+@media (min-width: 1200px) {
+    .table {
+        font-size: 1.6rem;
+    }
+}
+
+@media (min-width: 1400px) {
+    .table {
+        font-size: 1.8rem;
+    }
+}
+
+
+@include medium {
+    .root {
+        padding: 2rem 3.5rem;
+    }
+}
+
+@include large {
+    .root {
+        padding: 3rem 5rem;
+    }
+}
