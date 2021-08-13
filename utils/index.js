@@ -1,3 +1,16 @@
+export function mappable(size) {
+    return new Array(size).fill(0).map((_, i) => i);
+}
+
+export const bin = (value, digits = 8) =>
+    value.toString(2).padStart(digits, '0');
+
+export const dec = (value, digits = 3) =>
+    value.toString(10).padStart(digits, ' ');
+
+export const hex = (value, digits = 2) =>
+    value.toString(16).padStart(digits, '0');
+
 export function cleanUrl(url) {
     // https://media.discordapp.net/attachments/744267716365385729/834342248203943956/Syphon-Signal-Registered-XIIXVIIXVIIXVVI.jpg?width=1380&height=1840
     const discord = url.match(
