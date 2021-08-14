@@ -6,7 +6,7 @@ const DispatchContext = createContext();
 
 export const SET_JPEG = 'SET_JPEG';
 export const SET_BUSY = 'SET_BUSY';
-export const OUTGUESS_SET_OPTIONS = 'OUTGUESS_SET_OPTIONS';
+export const OUTGUESS_EXTRACT_OPTIONS = 'OUTGUESS_EXTRACT_OPTIONS';
 
 const reducer = (state, action) => {
     switch (action.type) {
@@ -16,10 +16,10 @@ const reducer = (state, action) => {
         case SET_BUSY: {
             return { ...state, busy: action.busy };
         }
-        case OUTGUESS_SET_OPTIONS: {
+        case OUTGUESS_EXTRACT_OPTIONS: {
             return {
                 ...state,
-                outguessOptions: {
+                outguessExtractOptions: {
                     defaultKey: action.defaultKey,
                     lowercase: action.lowercase,
                     noWhitespace: action.noWhitespace,
@@ -37,7 +37,7 @@ const reducer = (state, action) => {
 const defaultState = {
     jpeg: null,
     busy: false,
-    outguessOptions: {
+    outguessExtractOptions: {
         defaultKey: false,
         lowercase: true,
         noWhitespace: true,

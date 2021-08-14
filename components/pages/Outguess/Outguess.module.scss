@@ -25,9 +25,8 @@
         display: flex;
         flex-direction: row;
         flex-wrap: nowrap;
-        margin-top: 4rem;
 
-        .keyForm {
+        .forms {
             width: 50%;
             margin-right: 7rem;
         }
@@ -44,14 +43,8 @@
     }
 
     .extract {
-        display: flex;
-        flex-direction: row;
-        flex-wrap: nowrap;
-        margin-top: 4rem;
-
-        .keyForm {
+        .forms {
             width: 70%;
-            margin-right: 7rem;
         }
 
         .ephemeraInfo {

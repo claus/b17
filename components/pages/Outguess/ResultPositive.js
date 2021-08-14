@@ -4,20 +4,20 @@ import cx from 'classnames';
 
 import styles from './ResultPositive.module.scss';
 
-const ResultPositive = ({ result, password, className }) => {
-    const { blobUrl, bytes, ext, mime } = result;
+const ResultPositive = ({ result, className }) => {
+    const { blobUrl, bytes, key, ext, mime } = result;
 
     useEffect(() => {
         return () => URL.revokeObjectURL(blobUrl);
     }, [blobUrl]);
 
-    const fileName = `${password}.${ext}`;
+    const fileName = `${key}.${ext}`;
 
     return (
         <div className={cx(styles.root, className)}>
             <h2 className={styles.headline}>Embedded data found!</h2>
             <p className={styles.info}>
-                Key: <span className={styles.key}>{password}</span>
+                Key: <span className={styles.key}>{key}</span>
             </p>
             <p className={styles.info}>
                 File type: <span>{mime}</span>
@@ -53,8 +53,13 @@ const ResultPositive = ({ result, password, className }) => {
 };
 
 ResultPositive.propTypes = {
-    result: PropTypes.object.isRequired,
-    password: PropTypes.string.isRequired,
+    result: PropTypes.shape({
+        key: PropTypes.string.isRequired,
+        ext: PropTypes.string.isRequired,
+        mime: PropTypes.string.isRequired,
+        blobUrl: PropTypes.string.isRequired,
+        bytes: PropTypes.object.isRequired,
+    }).isRequired,
     className: PropTypes.string,
 };
 

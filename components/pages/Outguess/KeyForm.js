@@ -6,13 +6,12 @@ import accents from 'remove-accents';
 import {
     useDispatchContext,
     useStateContext,
-    SET_BUSY,
-    OUTGUESS_SET_OPTIONS,
+    OUTGUESS_EXTRACT_OPTIONS,
 } from 'store';
 
 import * as ga from 'utils/ga';
 import { permutations } from 'utils';
-import { useOutguessAPI } from 'components/OutguessAPIProvider';
+import useOutguess from './useOutguess';
 
 import ResultPositive from './ResultPositive';
 import ResultNegative from './ResultNegative';
@@ -25,19 +24,14 @@ import CheckBox from 'components/ui/CheckBox';
 import styles from './KeyForm.module.scss';
 
 const KeyForm = ({ className }) => {
-    const api = useOutguessAPI();
     const dispatch = useDispatchContext();
-    const { busy, outguessOptions } = useStateContext();
+    const { busy, outguessExtractOptions: options } = useStateContext();
     const [keys, setKeys] = useState(null);
     const [keysValid, setKeysValid] = useState(false);
-    const [progress, setProgress] = useState(0);
-    const [result, setResult] = useState(null);
     const formRef = useRef();
-    const raf = useRef();
-    const index = useRef(0);
 
     const getKeys = useCallback(() => {
-        if (outguessOptions.defaultKey) {
+        if (options.defaultKey) {
             return ['Default key'];
         }
         const converted = formRef.current.elements
@@ -45,116 +39,59 @@ const KeyForm = ({ className }) => {
             .value.split(',')
             .map(key => {
                 key = key.trim();
-                if (outguessOptions.lowercase) {
+                if (options.lowercase) {
                     key = key.toLowerCase();
                 }
-                if (outguessOptions.noWhitespace) {
+                if (options.noWhitespace) {
                     key = key.replace(/\s+/g, '');
                 }
-                if (outguessOptions.noAccents) {
+                if (options.noAccents) {
                     key = accents.remove(key);
                 }
-                if (outguessOptions.noNonAlphaNum) {
+                if (options.noNonAlphaNum) {
                     key = key.replace(/[^a-zA-Z0-9]/g, '');
                 }
                 return key;
             })
             .filter(key => key?.length > 0);
         return converted;
-    }, [outguessOptions]);
+    }, [options]);
 
-    useEffect(() => {
-        if (keys?.length > 0) {
-            let keyFound = false;
-            const startTime = performance.now();
-            dispatch({ type: SET_BUSY, busy: true });
-            const keyRunner = () => {
-                const start = performance.now();
-                while (index.current < keys.length) {
-                    const key = keys[index.current++];
-                    const res = api.decode(key);
-                    if (res === 0) {
-                        const resultPointer = api.getDecodeResultData();
-                        const resultSize = api.getDecodeResultLen();
-                        const resultView = new Uint8Array(
-                            api.ctx.HEAP8.buffer,
-                            resultPointer,
-                            resultSize
-                        );
-                        const bytes = new Uint8Array(resultView);
-                        const fileInfo = api.getDecodeResultType();
-                        if (fileInfo) {
-                            const blob = new Blob([bytes], {
-                                type: fileInfo.mime,
-                            });
-                            const blobUrl = URL.createObjectURL(blob);
-                            keyFound = true;
-                            setResult({ ...fileInfo, bytes, blobUrl });
-                            dispatch({ type: SET_BUSY, busy: false });
-                            ga.event('outguess', 'outguess_test_found', key);
-                            break;
-                        }
-                        api.freeDecodeResultData();
-                    }
-                    if (performance.now() - start > 12) {
-                        setProgress(index.current / keys.length);
-                        if (index.current < keys.length) {
-                            raf.current = requestAnimationFrame(keyRunner);
-                        }
-                        break;
-                    }
-                }
-                if (index.current === keys.length) {
-                    const endTime = performance.now();
-                    console.log(`${(endTime - startTime) / 1000} sec`);
-                    dispatch({ type: SET_BUSY, busy: false });
-                    if (!keyFound) {
-                        setResult({ bytes: null });
-                    }
-                }
-            };
-            keyRunner();
-        }
-        return () => {
-            cancelAnimationFrame(raf.current);
-        };
-    }, [keys, dispatch, api]);
+    const [result, progress, reset] = useOutguess(keys);
 
     useEffect(() => {
         setKeysValid(getKeys().length > 0);
-    }, [outguessOptions, getKeys]);
+    }, [options, getKeys]);
 
     const handleKeySubmit = event => {
         event.preventDefault();
+        reset();
         const keys = getKeys();
-        index.current = 0;
-        setResult(null);
         setKeys(permutations(keys));
         ga.event('outguess', 'outguess_test_keys', keys.join(', '));
     };
 
     const handleInput = () => {
-        index.current = 0;
-        setResult(null);
+        reset();
         setKeysValid(getKeys().length > 0);
     };
 
     const handleChange = () => {
         const item = name => formRef.current.elements.namedItem(name);
-        const defaultKey = item('outguess-options-defaultkey').checked;
-        const lowercase = item('outguess-options-lowercase').checked;
-        const noWhitespace = item('outguess-options-no-whitespace').checked;
-        const noAccents = item('outguess-options-no-accents').checked;
-        const noNonAlphaNum = item('outguess-options-no-nonalphanum').checked;
+        const defaultKey = item('outguess-extract-defaultkey').checked;
+        const lowercase = item('outguess-extract-lowercase').checked;
+        const noWhitespace = item('outguess-extract-no-whitespace').checked;
+        const noAccents = item('outguess-extract-no-accents').checked;
+        const noNonAlphaNum = item('outguess-extract-no-nonalphanum').checked;
         dispatch({
-            type: OUTGUESS_SET_OPTIONS,
+            type: OUTGUESS_EXTRACT_OPTIONS,
             defaultKey,
             lowercase,
             noWhitespace,
             noAccents,
             noNonAlphaNum,
         });
-        setResult(null);
+        reset();
     };
 
     const renderResult = () => {
@@ -164,19 +101,11 @@ const KeyForm = ({ className }) => {
         if (result.bytes === null) {
             return <ResultNegative className={styles.result} />;
         }
-        return (
-            <ResultPositive
-                result={result}
-                password={keys[index.current - 1]}
-                className={styles.result}
-            />
-        );
+        return <ResultPositive result={result} className={styles.result} />;
     };
 
-    const progressPercent = Math.round(progress * 100);
-
-    const inputDisabled = busy || outguessOptions.defaultKey;
-    const buttonDisabled = busy || (!keysValid && !outguessOptions.defaultKey);
+    const inputDisabled = busy || options.defaultKey;
+    const buttonDisabled = busy || (!keysValid && !options.defaultKey);
 
     return (
         <Section
@@ -193,46 +122,46 @@ const KeyForm = ({ className }) => {
                 <div className={styles.checkboxes}>
                     <fieldset disabled={busy}>
                         <CheckBox
-                            id="outguess-options-defaultkey"
-                            name="outguess-options-defaultkey"
+                            id="outguess-extract-defaultkey"
+                            name="outguess-extract-defaultkey"
                             label='Test for "Default key"'
-                            checked={outguessOptions.defaultKey}
+                            checked={options.defaultKey}
                             onChange={handleChange}
                             className={styles.checkbox}
                         />
                         <CheckBox
-                            id="outguess-options-lowercase"
-                            name="outguess-options-lowercase"
+                            id="outguess-extract-lowercase"
+                            name="outguess-extract-lowercase"
                             label="Lowercase"
-                            checked={outguessOptions.lowercase}
-                            disabled={outguessOptions.defaultKey}
+                            checked={options.lowercase}
+                            disabled={options.defaultKey}
                             onChange={handleChange}
                             className={styles.checkbox}
                         />
                         <CheckBox
-                            id="outguess-options-no-whitespace"
-                            name="outguess-options-no-whitespace"
+                            id="outguess-extract-no-whitespace"
+                            name="outguess-extract-no-whitespace"
                             label="Remove whitespace"
-                            checked={outguessOptions.noWhitespace}
-                            disabled={outguessOptions.defaultKey}
+                            checked={options.noWhitespace}
+                            disabled={options.defaultKey}
                             onChange={handleChange}
                             className={styles.checkbox}
                         />
                         <CheckBox
-                            id="outguess-options-no-accents"
-                            name="outguess-options-no-accents"
+                            id="outguess-extract-no-accents"
+                            name="outguess-extract-no-accents"
                             label="Convert accented characters"
-                            checked={outguessOptions.noAccents}
-                            disabled={outguessOptions.defaultKey}
+                            checked={options.noAccents}
+                            disabled={options.defaultKey}
                             onChange={handleChange}
                             className={styles.checkbox}
                         />
                         <CheckBox
-                            id="outguess-options-no-nonalphanum"
-                            name="outguess-options-no-nonalphanum"
+                            id="outguess-extract-no-nonalphanum"
+                            name="outguess-extract-no-nonalphanum"
                             label="Remove non-alphanumeric characters"
-                            checked={outguessOptions.noNonAlphaNum}
-                            disabled={outguessOptions.defaultKey}
+                            checked={options.noNonAlphaNum}
+                            disabled={options.defaultKey}
                             onChange={handleChange}
                             className={styles.checkbox}
                         />
@@ -255,9 +184,9 @@ const KeyForm = ({ className }) => {
             </form>
             {busy && (
                 <div className={styles.progress}>
-                    Testing <span>{index.current}</span> of{' '}
-                    <span>{keys?.length ?? 0}</span> keys (
-                    <span>{progressPercent}</span>%)
+                    Testing <span>{progress.current}</span> of{' '}
+                    <span>{progress.total}</span> keys (
+                    <span>{Math.round(progress.percent * 100)}</span>%)
                 </div>
             )}
             {renderResult()}

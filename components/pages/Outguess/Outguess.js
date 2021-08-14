@@ -14,6 +14,8 @@ import styles from './Outguess.module.scss';
 const OutguessPage = ({ fontsLoaded }) => {
     const { jpeg } = useStateContext();
 
+    const keyBase = `${jpeg?.fileName}-${jpeg?.fileLength}`;
+
     const rootStyle = cx(styles.root, {
         [styles['root-isHidden']]: !fontsLoaded,
     });
@@ -30,10 +32,9 @@ const OutguessPage = ({ fontsLoaded }) => {
                 <EphemeraForm />
                 {jpeg && (
                     <div className={styles.extract}>
-                        <KeyForm
-                            className={styles.keyForm}
-                            key={`${jpeg.fileName}-${jpeg.fileLength}`}
-                        />
+                        <div className={styles.forms}>
+                            <KeyForm key={`${keyBase}-keyForm`} />
+                        </div>
                         <EphemeraInfo className={styles.ephemeraInfo} />
                     </div>
                 )}

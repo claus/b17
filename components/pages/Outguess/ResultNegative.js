@@ -10,8 +10,6 @@ const ResultNegative = ({ className }) => {
 };
 
 ResultNegative.propTypes = {
-    result: PropTypes.object.isRequired,
-    password: PropTypes.string.isRequired,
     className: PropTypes.string,
 };
 
