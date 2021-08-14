@@ -14,6 +14,9 @@ import * as ga from 'utils/ga';
 import { permutations } from 'utils';
 import { useOutguessAPI } from 'components/OutguessAPIProvider';
 
+import ResultPositive from './ResultPositive';
+import ResultNegative from './ResultNegative';
+
 import Section from 'components/ui/Section';
 import InputField from 'components/ui/InputField';
 import Button from 'components/ui/Button';
@@ -159,12 +162,13 @@ const KeyForm = ({ className }) => {
             return null;
         }
         if (result.bytes === null) {
-            return <ResultNegative />;
+            return <ResultNegative className={styles.result} />;
         }
         return (
             <ResultPositive
                 result={result}
                 password={keys[index.current - 1]}
+                className={styles.result}
             />
         );
     };
@@ -259,66 +263,6 @@ const KeyForm = ({ className }) => {
             {renderResult()}
         </Section>
     );
-};
-
-const ResultNegative = () => {
-    return (
-        <div className={cx(styles.result, styles.resultNegative)}>
-            No embedded data found
-        </div>
-    );
-};
-
-const ResultPositive = ({ result, password }) => {
-    useEffect(() => {
-        const blobUrl = result.blobUrl;
-        return () => URL.revokeObjectURL(blobUrl);
-    }, [result.blobUrl]);
-
-    const fileName = `${password}.${result.ext}`;
-
-    return (
-        <div className={cx(styles.result, styles.resultPositive)}>
-            <h2 className={styles.resultHeadline}>Embedded data found!</h2>
-            <p className={styles.resultInfo}>
-                Key: <span className={styles.resultKey}>{password}</span>
-            </p>
-            <p className={styles.resultInfo}>
-                File type: <span>{result.mime}</span>
-            </p>
-            <p className={styles.resultInfo}>
-                File size: <span>{result.bytes.byteLength} bytes</span>
-            </p>
-            <p className={styles.resultDownload}>
-                <a
-                    href={result.blobUrl}
-                    download={fileName}
-                    className={styles.resultDownloadButton}
-                >
-                    <svg
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 24 24"
-                        fill="none"
-                        stroke="currentColor"
-                        strokeWidth="2"
-                        strokeLinecap="round"
-                        strokeLinejoin="round"
-                        className={styles.icon}
-                    >
-                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                        <polyline points="7 10 12 15 17 10"></polyline>
-                        <line x1="12" y1="15" x2="12" y2="3"></line>
-                    </svg>{' '}
-                    <span className={styles.label}>Download</span>
-                </a>
-            </p>
-        </div>
-    );
-};
-
-ResultPositive.propTypes = {
-    result: PropTypes.object.isRequired,
-    password: PropTypes.string.isRequired,
 };
 
 KeyForm.propTypes = {

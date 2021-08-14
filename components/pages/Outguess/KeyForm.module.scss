@@ -32,69 +32,7 @@
 }
 
 .result {
-    position: relative;
-    color: var(--white);
-    font-size: 1.4rem;
     margin-top: 1.5rem;
-    border-radius: 4px;
-}
-
-.resultNegative {
-    @include haasMedium;
-    padding: 1rem 1.5rem;
-    background-color: #a008;
-    font-size: 1.6rem;
-}
-
-.resultPositive {
-    padding: 1.75rem 2.5rem;
-    background-color: #0808;
-}
-
-.resultHeadline {
-    @include haasBold;
-    font-size: 2rem;
-
-    .resultPositive & {
-        margin-bottom: 1rem;
-    }
-}
-
-.resultInfo {
-    @include haasMedium;
-    font-size: 1.4rem;
-    line-height: 1.5;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-
-    > span {
-        @include haasRoman;
-        margin-left: 0.75rem;
-    }
-
-    .resultKey {
-        @include interstate;
-    }
-}
-
-.resultDownload {
-    @include haasMedium;
-    font-size: 1.7rem;
-    margin-top: 1rem;
-
-    .resultDownloadButton {
-        display: flex;
-        align-items: center;
-        width: fit-content;
-        padding: 0.3rem 0.75rem 0.4rem;
-        margin-left: -0.75rem;
-
-        .icon {
-            width: 1.2em;
-            margin-right: 0.7rem;
-        }
-    }
 }
 
 @include medium {
