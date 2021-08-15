@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import PropTypes from 'prop-types';
+import cx from 'classnames';
 
 import * as ga from 'utils/ga';
 import { cleanUrl } from 'utils';
 import { useDispatchContext, useStateContext, SET_JPEG } from 'store';
 import { useOutguessAPI } from 'components/OutguessAPIProvider';
+import { useDropzone } from 'react-dropzone';
 
 import UploadButton from 'components/ui/UploadButton';
 import Button from 'components/ui/Button';
@@ -18,6 +20,7 @@ const EphemeraForm = () => {
     const dispatch = useDispatchContext();
     const { jpeg, busy } = useStateContext();
     const [error, setError] = useState(null);
+    const disabled = busy;
 
     const setJpeg = (byteArray, fileName) => {
         if (jpeg) {
@@ -47,15 +50,29 @@ const EphemeraForm = () => {
         }
     };
 
-    const handleUploadClick = () => {
-        setError(null);
-    }
+    const dropzone = useDropzone({
+        onDropAccepted: upload, // eslint-disable-line no-use-before-define
+        onDropRejected: () => setError(null),
+        accept: 'image/jpeg',
+        multiple: false,
+        noKeyboard: true,
+        noClick: true,
+        disabled,
+    });
 
-    const handleUpload = event => {
-        if (event.target.files.length === 0) return;
+    const {
+        getRootProps,
+        getInputProps,
+        isDragAccept,
+        inputRef,
+    } = dropzone;
+
+    function upload(files) {
+        if (!files || files.length === 0) return;
+        const file = files[0];
         setError(null);
         dispatch({ type: SET_JPEG, jpeg: null });
-        const fileName = event.target.files[0].name;
+        const fileName = file.name;
         const reader = new FileReader();
         reader.onload = function () {
             const buffer = this.result;
@@ -66,9 +83,17 @@ const EphemeraForm = () => {
                 ga.event('outguess', 'outguess_upload_jpeg', fileName);
                 setJpeg(bytes, fileName);
             }
-            event.target.value = null;
+            inputRef.current.value = null;
         };
-        reader.readAsArrayBuffer(event.target.files[0]);
+        reader.readAsArrayBuffer(file);
+    }
+
+    const handleUpload = event => {
+        upload(event.target.files);
+    };
+
+    const handleUploadClick = () => {
+        setError(null);
     };
 
     const handleDownload = async event => {
@@ -97,33 +122,40 @@ const EphemeraForm = () => {
         }
     };
 
+    const rootClass = cx(styles.root, {
+        [styles.isDragAccept]: isDragAccept,
+    });
+
     return (
         <Section
             headline="Ephemera"
             info="Either upload a JPEG from your device, or download one from the Internet (Discord links work!)"
         >
-            <div className={styles.root}>
+            <div {...getRootProps({ className: rootClass })}>
                 <UploadButton
                     label="Upload"
                     accept="image/jpeg"
+                    multiple={false}
                     onChange={handleUpload}
                     onClick={handleUploadClick}
-                    disabled={busy}
+                    disabled={disabled}
+                    getDropzoneProps={getInputProps}
+                    className={styles.uploadButton}
                 />
                 <hr className={styles.separator} />
                 <form
                     noValidate
                     onSubmit={handleDownload}
-                    className={styles.ephemeraDownloadForm}
+                    className={styles.downloadForm}
                 >
                     <InputField
                         type="url"
                         name="ephemeraUrl"
                         placeholder="https://example.com/ephemera.jpeg"
-                        disabled={busy}
+                        disabled={disabled}
                         className={styles.input}
                     />
-                    <Button label="Load" disabled={busy} />
+                    <Button label="Load" disabled={disabled} />
                 </form>
             </div>
             {error && <div className={styles.error}>{error}</div>}

@@ -7,7 +7,32 @@
     flex-direction: column;
 }
 
-.ephemeraDownloadForm {
+.isDragAccept {
+    &::before {
+        @include haasMedium;
+        content: "Drop it like it's hot";
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: var(--form-input-background);
+        border: 0.2rem dashed var(--form-border);
+        border-radius: 0.4rem;
+        color: var(--form-input-placeholder);
+    }
+
+    .uploadButton,
+    .separator,
+    .downloadForm {
+        visibility: hidden;
+    }
+}
+
+.downloadForm {
     display: flex;
     flex: 1;
 }
