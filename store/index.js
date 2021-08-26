@@ -8,6 +8,7 @@ export const SET_JPEG = 'SET_JPEG';
 export const SET_BUSY = 'SET_BUSY';
 export const OUTGUESS_EPHEMERA_URL = 'OUTGUESS_EPHEMERA_URL';
 export const OUTGUESS_EXTRACT_OPTIONS = 'OUTGUESS_EXTRACT_OPTIONS';
+export const OUTGUESS_DICTIONARY_OPTIONS = 'OUTGUESS_DICTIONARY_OPTIONS';
 
 const reducer = (state, action) => {
     switch (action.type) {
@@ -32,6 +33,13 @@ const reducer = (state, action) => {
             );
             return { ...state, outguessExtractOptions };
         }
+        case OUTGUESS_DICTIONARY_OPTIONS: {
+            const { type, ...outguessDictionaryOptions } = action;
+            window.localStorage.setItem(
+                'outguessDictionaryOptionsAction',
+                JSON.stringify({ type, ...outguessDictionaryOptions })
+            );
+            return { ...state, outguessDictionaryOptions };
         }
         default: {
             throw new Error(`Unhandled action type ${action.type}.`);
@@ -50,6 +58,11 @@ const defaultState = {
         noAccents: true,
         noNonAlphaNum: true,
     },
+    outguessDictionaryOptions: {
+        lowercase: true,
+        noAccents: true,
+        noNonAlphaNum: true,
+    },
 };
 
 export const GlobalProvider = ({ children }) => {
@@ -63,6 +76,7 @@ export const GlobalProvider = ({ children }) => {
         };
         ls('outguessEphemeraUrlAction');
         ls('outguessExtractOptionsAction');
+        ls('outguessDictionaryOptionsAction');
     }, []);
     return (
         <DispatchContext.Provider value={dispatch}>
