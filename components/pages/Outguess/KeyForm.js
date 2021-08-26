@@ -109,7 +109,7 @@ const KeyForm = ({ className }) => {
 
     return (
         <Section
-            headline="Keys"
+            headline="Test Keys"
             info="Enter up to 7 comma-separated keys to test all permutations"
             className={cx(styles.root, className)}
         >

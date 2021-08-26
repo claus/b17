@@ -4,9 +4,15 @@ import cx from 'classnames';
 
 import * as ga from 'utils/ga';
 import { cleanUrl } from 'utils';
-import { useDispatchContext, useStateContext, SET_JPEG } from 'store';
 import { useOutguessAPI } from 'components/OutguessAPIProvider';
 import { useDropzone } from 'react-dropzone';
+
+import {
+    useDispatchContext,
+    useStateContext,
+    OUTGUESS_EPHEMERA_URL,
+    SET_JPEG,
+} from 'store';
 
 import UploadButton from 'components/ui/UploadButton';
 import Button from 'components/ui/Button';
@@ -18,7 +24,7 @@ import styles from './EphemeraForm.module.scss';
 const EphemeraForm = () => {
     const api = useOutguessAPI();
     const dispatch = useDispatchContext();
-    const { jpeg, busy } = useStateContext();
+    const { jpeg, busy, outguessEphemeraUrl: ephemeraUrl } = useStateContext();
     const [error, setError] = useState(null);
     const disabled = busy;
 
@@ -60,12 +66,7 @@ const EphemeraForm = () => {
         disabled,
     });
 
-    const {
-        getRootProps,
-        getInputProps,
-        isDragAccept,
-        inputRef,
-    } = dropzone;
+    const { getRootProps, getInputProps, isDragAccept, inputRef } = dropzone;
 
     function upload(files) {
         if (!files || files.length === 0) return;
@@ -122,6 +123,13 @@ const EphemeraForm = () => {
         }
     };
 
+    const handleEphemeraUrlChange = event => {
+        dispatch({
+            type: OUTGUESS_EPHEMERA_URL,
+            ephemeraUrl: event.target.value,
+        });
+    };
+
     const rootClass = cx(styles.root, {
         [styles.isDragAccept]: isDragAccept,
     });
@@ -151,8 +159,10 @@ const EphemeraForm = () => {
                     <InputField
                         type="url"
                         name="ephemeraUrl"
+                        value={ephemeraUrl}
                         placeholder="https://example.com/ephemera.jpeg"
                         disabled={disabled}
+                        onInput={handleEphemeraUrlChange}
                         className={styles.input}
                     />
                     <Button label="Load" disabled={disabled} />

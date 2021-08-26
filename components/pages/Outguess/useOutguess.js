@@ -66,7 +66,7 @@ export default function useOutguess(keys) {
                 }
                 if (index.current === keys.length) {
                     const endTime = performance.now();
-                    console.log(`${(endTime - startTime) / 1000} sec`);
+                    // console.log(`${(endTime - startTime) / 1000} sec`);
                     dispatch({ type: SET_BUSY, busy: false });
                     if (!keyFound) {
                         setResult({ bytes: null });
